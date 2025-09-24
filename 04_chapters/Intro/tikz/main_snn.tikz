@@ -1,0 +1,36 @@
+ \begin{tikzpicture}
+	\pgfmathsetmacro{\sizefont}{3}
+	\pgfmathsetmacro{\blockthick}{1.25mm}
+
+	\begin{axis}[
+%		xmax=15.75, xmin=0,
+%		ymax=11.75, ymin=0,
+		x=1cm,
+		y=1cm,
+		axis x line = middle,
+		axis y line = middle,
+		axis line style =ultra thick,
+		major tick style=darkgray,
+		major grid style=darkgray,
+		minor grid style=darkgray,
+		minor tick num=0,
+		ticks=none,
+		>=latex,
+		clip=false,% <--- otherwise $x$ will be clipped
+		]
+		
+		\addplot[red, line width=3mm, draw]
+		coordinates{
+			(0,0) (1,0) (1, 2) (2.5, 0.5) (2.5, 3) (3, 2.5) (3, 5) (5.5, 2.5) (5.5, 6.5) (5.5, 0) (6.5, 0) (6.5, 1.5) (7, 1.0) (7, 3.5) (7.5, 3.0) (7.5, 5.5) (9, 4)
+		};
+	
+		\addplot[darkgray, line width=1.5mm, draw, dash pattern=on 15pt off 7.5pt]
+		coordinates{
+			(0,6) (9, 6)
+		};
+	
+	
+		
+	\end{axis}
+
+\end{tikzpicture}

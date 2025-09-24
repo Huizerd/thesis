@@ -1,0 +1,115 @@
+\documentclass{dissertation}
+%\documentclass[print]{dissertation}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHECK
+%\documentclass[print,draft]{dissertation}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{arydshln}
+\usepackage{wrapfig}
+\usepackage{acronym}
+\usepackage{caption}
+\usepackage[font=footnotesize]{subcaption}
+\usepackage{hhline}
+\usepackage{tcolorbox}
+\usepackage{pdfpages}
+
+\usepackage{qrcode}
+\usepackage{enumitem}
+
+\Crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
+\Crefname{table}{Table}{Tables}
+\Crefname{table}{Tab.}{Tabs.}
+
+\newcommand{\chapref}[1]{Chapter~\ref{#1}}
+\newcommand{\chapreftwo}[2]{Chapters~\ref{#1} and~\ref{#2}}
+\newcommand{\chaprefthree}[3]{Chapters~\ref{#1},~\ref{#2}, and~\ref{#3}}
+\newcommand{\chapreffour}[4]{Chapters~\ref{#1}, \ref{#2}, \ref{#3}, and~\ref{#4}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\eqnref}[1]{Eq.~\ref{#1}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\eqnreftwo}[2]{Eqs.~\ref{#1} and~\ref{#2}}
+\newcommand{\secreftwo}[2]{Sections~\ref{#1} and~\ref{#2}}
+\newcommand{\figreftwo}[2]{Figs.~\ref{#1} and~\ref{#2}}
+\newcommand{\figrefthree}[3]{Figs.~\ref{#1}, {#2} and~\ref{#3}}
+\newcommand{\tabreftwo}[2]{Tables~\ref{#1} and~\ref{#2}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\mli}[1]{\mathit{#1}}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\makeatletter
+\def\thickhline{%
+	\noalign{\ifnum0=`}\fi\hrule \@height \thickarrayrulewidth \futurelet
+	\reserved@a\@xthickhline}
+\def\@xthickhline{\ifx\reserved@a\thickhline
+	\vskip\doublerulesep
+	\vskip-\thickarrayrulewidth
+	\fi
+	\ifnum0=`{\fi}}
+\makeatother
+
+\newlength{\thickarrayrulewidth}
+\setlength{\thickarrayrulewidth}{2\arrayrulewidth}
+
+\newenvironment{blockquote}{%
+	\par%
+	\leftskip=2em\rightskip=2em%
+	\noindent\ignorespaces}{%
+	\par
+}
+
+\renewcommand*{\UrlFont}{\color{tudelft-orange}\relax}  %%%%%%%%%%%%%%%%%%%%%% CHANGE
+\begin{document}
+	\title{Self-Supervised Neuromorphic Perception\\\vspace{5pt} for Autonomous Flying Robots}
+	\author{Federico}{Paredes-Vallés}
+	
+	% REMOVE FOR PRINTING
+	\setcounter{page}{0}\includepdf[pages=-]{coverfront.pdf}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHECK
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	\frontmatter
+	
+	% cover width: 5+170+15(prob)+170+5 = 365
+	% cover height: 5+240+5 = 250
+	\include{01_title/title}
+	\tableofcontents
+	\include{02_summary/summary}
+	\include{03_acronyms/acronyms}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	\mainmatter
+	\thumbtrue
+	
+	\include{04_chapters/Intro/main}
+	\include{04_chapters/NeurIPS21/main}
+	\include{04_chapters/SR23/main}
+	\include{04_chapters/Conclusion/main}
+	% \appendix
+	
+	\thumbfalse
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\include{05_references/references}
+	\include{06_acks/acks}
+	\include{07_cv/cv}
+	\include{08_publications/publications}
+	
+	\newpage
+	\thispagestyle{empty}
+	\phantom{blabla}
+	\newpage
+	
+	\newpage
+	\thispagestyle{empty}
+	\phantom{blabla}
+	\newpage
+	
+	% REMOVE FOR PRINTING
+	% \setcounter{page}{0}\includepdf[pages=-]{coverback.pdf}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHECK
+	% \setcounter{page}{0}\includepdf[pages=-]{propositions.pdf}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHECK
+	
+\end{document}
+

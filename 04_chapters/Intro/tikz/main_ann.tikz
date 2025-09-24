@@ -1,0 +1,29 @@
+ \begin{tikzpicture}
+	\pgfmathsetmacro{\sizefont}{3}
+	\pgfmathsetmacro{\blockthick}{1.25mm}
+	
+	\begin{axis}[
+		%		xmax=15.75, xmin=0,
+		%		ymax=11.75, ymin=0,
+		x=1cm,
+		y=1cm,
+		axis x line = middle,
+		axis y line = middle,
+		axis line style =ultra thick,
+		major tick style=darkgray,
+		major grid style=darkgray,
+		minor grid style=darkgray,
+		minor tick num=0,
+		ticks=none,
+		>=latex,
+		clip=false,% <--- otherwise $x$ will be clipped
+		]
+		
+		\addplot[red, line width=3mm, draw]
+		coordinates{
+			(-4.5,0) (0,0) (4.5, 4.5)
+		};
+		
+	\end{axis}
+	
+\end{tikzpicture}

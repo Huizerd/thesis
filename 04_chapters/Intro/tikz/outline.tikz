@@ -1,0 +1,132 @@
+\begin{tikzpicture}
+	
+	\pgfmathsetmacro{\blockthick}{0.35mm}
+	
+	\begin{scope}[shift={(-4.635,-1.01)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq1) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ1}}};
+	\end{scope}
+
+	\begin{scope}[shift={(4.635,-4.53)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq2) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ2}}};
+	\end{scope}
+
+	\begin{scope}[shift={(-4.635,-4.53)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq3) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ3}}};
+	\end{scope}
+
+	\begin{scope}[shift={(-4.635,-8.05)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq4) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ4}}};
+	\end{scope}
+
+	\begin{scope}[shift={(4.635,-8.05)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq4) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ4}}};
+	\end{scope}
+
+	\begin{scope}[shift={(-4.635,-11.035)}]
+		\node [line width=\blockthick, draw, align=center, minimum width=1.25cm, rounded corners, minimum height=1cm, fill=black!5!]  (rq5) {\hspace{0pt}\\\vspace{-0.255cm}{\footnotesize\textbf{RQ5}}};
+	\end{scope}
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, rounded corners, text width=10.3cm, minimum height=2cm, fill=white]  (ch2) {\textbf{Chapter 2}: Autonomous drone racing: Winning AIRR 2019\\\vspace{0.275cm} \hspace{0pt}};
+
+	\node[below = -1cm of ch2, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1c.pdf}};
+	\node[below = -1cm of ch2, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2a.pdf}};
+	\node[below = -1cm of ch2, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3a.pdf}};
+	\node[below = -1cm of ch2, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, below right = 1cm and -4.75cm of ch2, text width=4.5cm, fill=white]  (ch3) {\textbf{Chapter 3}:\\ SSL event-based frame reconstruction\\\vspace{0.15cm} \hspace{0pt}};
+	
+%	\path[->,thick,red] ([xshift=-0mm, yshift=2cm] ch3.north) edge (ch3.north);
+	\path[-latex,thick, black] ([xshift=0cm, yshift=1cm] ch3.north) edge ([xshift=0] ch3.north);
+	
+	\node[below = -0.85cm of ch3, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[below = -0.85cm of ch3, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[below = -0.85cm of ch3, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[below = -0.85cm of ch3, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, below left = 1cm and -4.75cm of ch2, text width=4.5cm, fill=white]  (ch4) {\textbf{Chapter 4}:\\ Unsupervised, event-based optical flow with SNNs\\\vspace{0.15cm} \hspace{0pt}};
+	
+	\node[below = -0.85cm of ch4, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[below = -0.85cm of ch4, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[below = -0.85cm of ch4, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[below = -0.85cm of ch4, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4b.pdf}};
+	
+%	\path[->,thick,red] ([xshift=-0mm, yshift=2cm] ch4.north) edge (ch4.north);
+	\path[-latex,thick, black] ([xshift=0cm, yshift=1cm] ch4.north) edge ([xshift=0cm] ch4.north);
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, below = 1cm of ch4, text width=4.5cm, fill=white]  (ch5) {\textbf{Chapter 5}:\\ Self-supervised, event-based optical flow with SNNs\\\vspace{0.15cm} \hspace{0pt}};
+	
+	\node[below = -0.85cm of ch5, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[below = -0.85cm of ch5, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[below = -0.85cm of ch5, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[below = -0.85cm of ch5, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4b.pdf}};
+	
+	\path[-latex,thick, black] ([xshift=0cm] ch4.south) edge ([xshift=0cm] ch5.north);
+	\path[-latex,thick, black] ([xshift=0.05cm, yshift=0.05cm] ch3.south west) edge ([xshift=-0.05cm, yshift=-0.05cm] ch5.north east);
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, below = 1cm of ch3, text width=4.5cm, fill=white]  (ch6) {\textbf{Chapter 6}:\\ Robustifying self-supervised, event-based optical flow\\\vspace{0.15cm} \hspace{0pt}};
+	
+	\node[below = -0.85cm of ch6, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[below = -0.85cm of ch6, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[below = -0.85cm of ch6, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[below = -0.85cm of ch6, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	
+	\path[-latex,thick, black] ([xshift=0cm] ch5.east) edge ([xshift=0cm] ch6.west);
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, rounded corners, text width=10.3cm, minimum height=2cm, below = 8cm of ch2, fill=white]  (ch7) {\textbf{Chapter 7}: Fully neuromorphic autonomous drone flight\\\vspace{0.275cm} \hspace{0pt}};
+	
+	\node[below = -1cm of ch7, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1c.pdf}};
+	\node[below = -1cm of ch7, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[below = -1cm of ch7, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[below = -1cm of ch7, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4b.pdf}};
+	
+	\path[-latex,thick, black] ([xshift=0cm] ch5.south) edge ([yshift=-0.9275cm] ch5.south);
+	\path[-latex,thick, black] ([xshift=0cm] ch6.south) edge ([yshift=-0.9275cm] ch6.south);
+		
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, rounded corners, text width=10.3cm, minimum height=1cm, below = 1cm of ch7]  (conclusion) {\textbf{Chapter 8}: Discussion and conclusion};
+	
+	\path[-latex,thick, black] ([xshift=0cm] ch7.south) edge ([xshift=0cm] conclusion.north);
+	
+	%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=6.25cm, rounded corners, above right = -1.025cm and 1cm of conclusion, text width=5.3cm, dashed]  (app2) {};
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, above right = -0.625cm and 1.4cm of conclusion, text width=4.5cm]  (app2) {\textbf{Appendix 2}:\\ Frame-based optical flow on a nano quadcopter\\\vspace{0.15cm} \hspace{0pt}};
+	
+	\node[below = -0.85cm of app2, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1c.pdf}};
+	\node[below = -0.85cm of app2, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2a.pdf}};
+	\node[below = -0.85cm of app2, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3a.pdf}};
+	\node[below = -0.85cm of app2, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	
+	\node [line width=\blockthick, draw, align=center, minimum width=2cm, minimum height=2.5cm, rounded corners, above = 0.45cm of app2, text width=4.5cm]  (app1) {\textbf{Appendix 1}:\\ How do neural networks estimate optical flow?\\\vspace{0.15cm} \hspace{0pt}};
+	
+	\node[below = -0.85cm of app1, shift={(-1.2,0)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[below = -0.85cm of app1, shift={(-0.4,0)}] {\includegraphics[width=0.5cm]{logo2a.pdf}};
+	\node[below = -0.85cm of app1, shift={(0.4,0)}] {\includegraphics[width=0.5cm]{logo3a.pdf}};
+	\node[below = -0.85cm of app1, shift={(1.2,0)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	
+	%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\pgfmathsetmacro{\separation}{1cm}
+	\pgfmathsetmacro{\hor}{1cm}
+	
+	\node[right = 0.85cm of ch2, shift={(0,0.35cm)}] {\includegraphics[width=0.5cm]{logo1a.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,0.35cm-0.05cm)}] {\hspace{20pt}\textbf{Simulation experiments}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm)}] {\includegraphics[width=0.5cm]{logo1b.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm-0.05cm)}] {\hspace{20pt}\textbf{Robotic experiments}};
+		
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - \separation)}] {\includegraphics[width=0.5cm]{logo2a.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - \separation-0.05cm)}] {\hspace{20pt}\textbf{Trained w/ ground truth}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - \separation - 0.7cm)}] {\includegraphics[width=0.5cm]{logo2b.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - \separation - 0.7cm-0.05cm)}] {\hspace{20pt}\textbf{Trained w/o ground truth}};
+	
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 2*\separation - 0.7cm)}] {\includegraphics[width=0.5cm]{logo3a.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 2*\separation - 0.7cm-0.00cm)}] {\hspace{20pt}\textbf{Frame-based camera}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 2*\separation - 2*0.7cm)}] {\includegraphics[width=0.5cm]{logo3b.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 2*\separation - 2*0.7cm-0.0cm)}] {\hspace{20pt}\textbf{Event-based camera}};
+	
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 3*\separation - 2*0.7cm)}] {\includegraphics[width=0.5cm]{logo4a.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 3*\separation - 2*0.7cm-0.0cm)}] {\hspace{20pt}\textbf{Artificial neural networks}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 3*\separation - 3*0.7cm)}] {\includegraphics[width=0.5cm]{logo4b.pdf}};
+	\node[right = 0.85cm of ch2, shift={(0,-0.35cm - 3*\separation - 3*0.7cm-0.0cm)}] {\hspace{20pt}\textbf{Spiking neural networks}};
+	
+\end{tikzpicture}

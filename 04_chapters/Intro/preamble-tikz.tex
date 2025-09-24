@@ -1,0 +1,71 @@
+% \RequirePackage{luatex85}
+% \directlua{pdf.setminorversion(5)}
+% \directlua{pdf.setcompresslevel(9)}
+% \directlua{pdf.setobjcompresslevel(3)}
+\documentclass[conference,a4paper]{article}
+
+% imports
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{bigints}
+\usepackage{textgreek}
+\usepackage{tikz}
+\usepackage{tikz-network}
+\usepackage{tikz-3dplot}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+
+% tikz settings
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{arrows,decorations.markings}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix,chains,arrows,plotmarks}
+\usetikzlibrary{decorations.pathreplacing,angles,quotes,shapes}
+\usetikzlibrary{patterns}
+
+% pgfplots settings
+\usepgfplotslibrary{groupplots,patchplots,fillbetween}
+
+\pgfplotsset{width=10cm,compat=1.15}
+\pgfplotsset{
+    /pgfplots/legend image code/.code={%
+        \draw[mark repeat=2,mark phase=2,#1] 
+            plot coordinates {
+                (0cm,0cm) 
+                (0.15cm,0cm) 
+                (0.3cm,0cm)%
+            };
+    },
+}
+
+% column width for one-column figures
+\newlength{\oneoftwocolwidth}
+\setlength{\oneoftwocolwidth}{\columnwidth}
+
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{.75}}
+\newcommand*\bigcdot@[2]{\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
+
+\definecolor{BulletsColor}{rgb}{0, 0, 0}
+\newlist{myBullets}{itemize}{1}
+
+\setlist[myBullets]{
+	label=\textcolor{BulletsColor}{\textbullet},
+	leftmargin=*,
+	topsep=0ex,
+	partopsep=0ex,
+	parsep=0ex,
+	itemsep=0ex,
+	before={\color{BulletsColor}\itshape}
+}
+
+% pdf compression
+% \pdfminorversion=5
+% \pdfcompresslevel=9
+% \pdfobjcompresslevel=2

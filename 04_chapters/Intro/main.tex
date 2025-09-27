@@ -1,177 +1,63 @@
-\chapter{Introduction}
-\label{cha:intro}
+\chapter{Introduction}\label{cha:intro}
 
-\dropcap{T}{he} overarching objective of robotics research is to design and create advanced synthetic machines that will ultimately enhance human lives and societal well-being. To achieve this objective, these systems will need to perform tasks autonomously or collaboratively with humans, while effectively interacting with and navigating their environments. Therefore, their ability to perceive the world and make sense of it is of paramount importance. In particular, vision is arguably the most important sense for humans \cite{enoch2019evaluating}, as it provides the richest source of information about the environment. For this reason, it is no wonder that providing robots with vision-based perception capabilities (further referred to as \textit{computer vision}) has been the focus of intense research in robotics for decades \cite{horn1986robot}.
+% \section{Sensing: Event-based cameras}\label{sec:camera}
 
-Fueled by the convergence of computational intelligence and engineering prowess, computer vision has made tremendous progress in recent years. In particular, the advent of deep learning has led to a paradigm shift, with deep neural networks now outperforming handcrafted algorithms on many tasks \cite{krizhevsky2012imagenet, schmidhuber2015deep}. However, training these networks usually requires large amounts of labeled data, which is often difficult and/or costly to obtain in a robotics context. Moreover, their deployment on robots that are safe to interact with remains a challenge, as they are typically computationally expensive and thus require powerful hardware and large amounts of energy. This is especially problematic for flying robots, which are inherently constrained by their payload and power consumption \cite{Floreano2015}.
-
-%This could be reformulated to become a bit clearer / more explicit, adding something like: This need for compute and energy leads to heavier, less safe robots.
-
-In pursuit of mission-capable, autonomous, small flying robots, many roboticists have turned to nature for inspiration. Although the examples are numerous, flying insects stand out as perhaps the most successful case of agile and robust flying machines \cite{vance2013kinematic, combes2012linking, muijres2014flies}. They are able to navigate complex environments at high speeds, while avoiding obstacles and reacting to unexpected events. In addition, they are able to perform these tasks with a brain that is orders of magnitude smaller than that of a human \cite{menzel2015memory}. Therefore, the quest for inspiration from the animal kingdom not only frequently manifests itself in the design of the ``body'' of some these robots \cite{de2009design, karasek2018tailless}, but also, since more recently, in the design of their on-board sensors and processors \cite{lichtsteiner2008128, posch2014retinomorphic, davies2018loihi}. 
-%The effort of better approximating biological sensing and processing is termed neuromorphic engineering. This field
-The field of neuromorphic engineering 
-has emerged as a promising alternative to conventional computing for edge devices, as it aims to develop an approach to sensing and computing that, inspired by the function and structure of biological brains, is able to perform complex tasks with low latency and minimal energy consumption \cite{mahowald1994silicon, mead1988silicon, ham2021neuromorphic}. 
-%The field of neuromorphic engineering (i.e., sparse and asynchronous computing) has emerged as a promising alternative to conventional computing (i.e., continuous, synchronous) for edge devices, as it aims to develop bio-inspired sensing and processing hardware that is able to perform complex tasks with low latency and minimal energy consumption. 
-
-The combination of neuromorphic vision sensors, further referred to as \textit{event} or \textit{event-based} cameras interchangeably \cite{gallego2019event}, and neuromorphic processors \cite{davies2018loihi, bouvier2019spiking} running trainable, \textit{spiking neural networks} (SNNs) \cite{eshraghian2021training} holds the promise of highly efficient and high-bandwidth vision-based perception and processing.
-% for small flying robots. 
-The challenge, however, lies in the fact that the working principle of these systems is fundamentally different from those of conventional vision sensors and processors (see \figref{intro:neuro}), and therefore, another paradigm shift is needed to exploit their full potential. In this dissertation, we address this challenge by proposing novel learning-based solutions for neuromorphic, vision-based perception and processing.
-In addition, we demonstrate their effectiveness in the context of the autonomous flight of small flying robots, as they form a prime example of resource-constrained platforms with urgent need for low-energy, low-latency sensing and processing.
-%, and by demonstrating their effectiveness in the context of the autonomous flight of small flying robots. 
-The proposed solutions are formulated using either unsupervised or self-supervised learning (SSL) not only to remove the need for labeled data, but also to 
-%prevent reality gap issues that may arise when training on synthetic data.
-ensure that the learned solutions perform well on the robots --- avoiding the ``reality gap'' that arises when learning on synthetic data.
-
-%you can leave this as is, but if you want to be even more accessible, you can explain the issue here briefly:also to ensure that learned solutions work well on the robot - avoiding the "reality gap" that arises when learning on synthetic data.  
-
-The following sections use \figref{intro:neuro} as a common thread to provide an overview of previous research on the different elements of the neuromorphic computing field that are relevant to this dissertation (namely neuromorphic vision sensors, algorithms, and processors), and on how they compare to their conventional counterparts. Thereafter, the research objective and questions of this thesis are formulated, and its outline is presented. 
-
-\section{Sensing: Event-based cameras}\label{sec:camera}
-
-Contrary to standard cameras, which make use of an external clock to sample light and provide images at a constant frequency (see \figref{intro:neuro}, top left); event-based cameras are bio-inspired vision sensors that feature a pixel array that asynchronously reacts to pixel-level brightness changes \cite{gallego2019event}. This working principle results in a sparse output stream consisting of digital, timestamped \textit{events}; with every event representing a (log--)brightness change of a predefined magnitude, and encoding the $x$--$y$ location and polarity of the change. As illustrated in \figref{intro:neuro} (bottom left), the data-rate of the output event stream depends on the dynamics of the visual scene. The larger the brightness change, the more events per second are generated (and vice versa). More importantly for this dissertation is that, under constant illumination, events are triggered by the apparent motion (i.e., optical flow \cite{gibson1950perception}) of contrast in the image space \cite{gallego2019event}.
-
-Because of the sparse and asynchronous operating principle, these cameras are characterized by several advantages with respect to their conventional frame-based counterparts: a very high temporal resolution (in the order of microseconds), a sub-millisecond latency, and (potentially) a low power consumption (in the order of milliwatts) \cite{gallego2019event}. Despite the paradigm shift, the potential that these advantages entail for many fields has quickly triggered the generation of an extensive body of literature \cite{eventresources} on, not only how to use events to solve a wide range of computer vision tasks \cite{orchard2015converting, amir2017low, zhu2018ev, sun2022ess, messikommer2023data, muglikar2023event}, but also on how to best process the events to retain the advantages over frame-based algorithms \cite{gehrig2019end, schaefer2022aegnn, gehrig2023recurrent, zubic2023chaos}. Nevertheless, regarding the latter, the current mainstream solution is to buffer events over substantially long time windows and create grid-like representations \cite{zhu2019unsupervised} that are compatible with artificial neural networks (ANNs). These representations allow ANNs to extract the information encoded in the collective of events, but usually come at the cost of a high latency despite the high levels of accuracy reported \cite{gehrig2021raft}. In addition, to run under real-time constraints, ANNs usually require GPU-based hardware accelerators that, being characterized by a power consumption usually in the order of tens of watts, limit their deployability on edge platforms such as small flying robots.
-
-\section{Algorithms: Spiking neural networks}
-
-Instead of processing event data with ANNs (see \figref{intro:neuro}, top center), the neuromorphic approach to retaining the advantages of event cameras is to process the sparse and asynchronous events as they come, i.e., one-by-one in a per-event processing fashion, with SNNs. As in \figref{intro:neuro} (bottom center), these architectures are bio-inspired computational models comprised of spiking neurons: processing units that produce binary activations (i.e., \textit{spikes}) whenever their internal state (usually referred to as \textit{membrane potential} or \textit{voltage}) surpasses a predefined threshold. This spike-based operating principle leads to a sparse and asynchronous computing which not only is a perfect match for event cameras due to their common nature, but also has the potential of being low-latency and low-power when deployed on dedicated processors \cite{davies2018loihi, bouvier2019spiking}.
-
-\begin{figure}[t!]
-	\centering
-	\includegraphics[trim=0 175 0 0, clip, width=\linewidth]{04_chapters/Intro/tikz/main_fig.pdf}
-	\caption{Elements from the field of neuromorphic computing relevant to this dissertation (\textit{bottom}), and how they compare to their conventional counterparts (\textit{top}). In this thesis, we cover both approaches to computing in the context of the vision-based autonomous flight of small flying robots (see \chapreftwo{cha:fr}{cha:sr}).}
-	\label{intro:neuro}
-\end{figure}
-
-The limited availability of neuromorphic hardware is one factor that has hindered the widespread adoption of SNNs in fields like computer vision and robotics. However, another significant challenge comes from the fact that learning algorithms designed for ANNs do not transfer well to the spiking domain.
-%Besides due to the limited availability of this \textit{neuromorphic hardware}, what has prevented the widespread adoption of SNNs in fields such as computer vision or robotics is that the learning algorithms designed for ANNs do not transfer well to the spiking domain. 
-This has driven extensive research mainly in two directions: (i) finding ANN-SNN conversion strategies that lead to high efficiency gains without drops in accuracy \cite{stocklOptimizedSpikingNeurons2021, bu2023optimal}, and (ii) direct training of SNN with traditional backpropagation (through time) using a few adjustments to deal with the non-differentiability of the spiking activation function \cite{neftciSurrogateGradientLearning2019, zenkeRemarkableRobustnessSurrogate2021, eshraghian2021training}. This lack of consensus on how to design training pipelines for SNNs, which in turn underscores the complexity of the problem, has limited the application of these architectures to often less complicated, discrete problems \cite{cordoneLearningEventCameras2021, fangIncorporatingLearnableMembrane2021, orchard2015converting, amir2017low}. In addition, note that, prior to this dissertation, learning in the SNN domain was dominated by spike-timing-dependent plasticity (STDP) \cite{caporale2008spike}: a form of Hebbian (i.e., unsupervised) learning \cite{hebb2005organization} that adapts the strength of a connection between two neurons based on their correlated activity, and was only successfully applied in the computer vision domain to image classification tasks \cite{masquelier2007unsupervised, diehl2015unsupervised, kheradpisheh2018stdp, tavanaei2017multi, shrestha2017stable}.
-
-\section{Processing: Neuromorphic processors}
-
-In order to unlock the potential of SNNs as low-power and low-latency computing solutions for event-based computer vision, dedicated hardware accelerators that are able to exploit the sparse and asynchronous nature of these networks are needed. In this regard, the field of neuromorphic engineering has made tremendous progress in recent years with the development of several neuromorphic processors, such as the TrueNorth chip \cite{merolla2014million}, the BrainScaleS wafer-scale system \cite{schemmel2010wafer}, the DynapCNN \cite{liu2019live}, the Loihi processors \cite{davies2018loihi, orchard2021efficient}, and others \cite{merolla2014million, furber2014spinnaker}. Despite their differences (e.g., number of neurons and synapses), these processors share a few characteristics, some of which are highlighted in \figref{intro:neuro} (bottom right). Mainly, they differ from general-purpose, von-Neumann architectures (e.g., CPUs, GPUs) in that, instead of having separate memory and processing units, the memory is in close proximity to the processing. These two elements are arranged in several (small) neurocores \cite{bouvier2019spiking}, which in turn are interconnected via the address-event representation protocol \cite{sivilotti1991wiring} following a network-on-chip communication scheme \cite{boahen2000point, liu2014event}. With these architectures, the different layers of an SNN can be distributed among the available neurocores. This parallelization of the storage and computation, together with the sparse, binary activations of the spiking neurons, allows for a low-power and low-latency operation \cite{bouvier2019spiking}. Note that, in spite of this potential, most of the processors remain as research prototypes and are not commercially available, thus limiting their adoption. 
-
-\section{Neuromorphic computing in robotics}\label{sec:neurobotics}
-
-As aforementioned, the field of neuromorphic computing has the potential to revolutionize the way robots perceive and interact with their environments. The combination of event-based vision sensors and neuromorphic processors has the potential to enable robots to perform complex tasks with low latency and minimal energy consumption. However, despite the extensive (yet young) body of literature on neuromorphic computing, its application to robotics has been limited to a few examples, and even fewer in the context of autonomous flight. In this section, we provide a brief overview of these examples. % most relevant examples of neuromorphic computing in the context of robotics. %Unless otherwise stated, these examples are not deployed on neuromorphic processors, but rather on conventional computing hardware (e.g., CPUs, GPUs).
-
-%\subsubsection*{Vision}
-
-Many of the applications that have been explored over recent years in the event-based camera domain can be used, in one way or another, to provide robots with some of the visual information required to autonomously navigate an environment. This includes information about the robot's ego-motion, the motion of other objects in the scene, and the structure of the environment; and usually comes from algorithms performing optical flow estimation \cite{rueckauer2016evaluation, benosman2012asynchronous, zhu2018ev, zhu2019unsupervised}, feature detection and tracking \cite{mueggler2017fast, alzugaray2018asynchronous, gehrig2020eklt}, 3D reconstruction \cite{kim2016real, zhou2018semi, rebecq2018emvs}, visual (inertial) odometry \cite{mueggler2018continuous, zhou2021event, hidalgo2022event}, or simultaneous localization and mapping \cite{vidal2018ultimate}, among others. Early works incorporating an event camera in the control loop of robotic platforms already demonstrated the advantages of these sensors through low-latency state updates and efficient data processing \cite{conradt2009embedded, delbruck2013robotic}. Despite their algorithmic simplicity, these findings motivated researchers in aerial robotics to adopt event-based cameras in detriment of their conventional, frame-based counterparts. The work of Pijnacker-Hordijk \textit{et al.}\ \cite{pijnackerhordijk2018vertical}, which was later extended by Scheper  \textit{et al.}\ \cite{scheper2020evolution}, was the first in showing these sensors in the control loop of a flying robot, with the task being optical-flow-based landing \cite{decroon2013opticflow, decroon2016monocular, Ho2016, ho2018optical}. Thereafter, Vidal \textit{et al.}\ \cite{vidal2018ultimate} and Sun \textit{et al.}\ \cite{sun2021autonomous} demonstrated the event camera in the context of visual inertial navigation, also for flying robots. In both cases, the authors reported that event-based cameras, mainly because of their high temporal resolution and data sparsity, allowed for pushing the limits of their robotic platforms to flying speeds that were out of reach for frame-based cameras (because of their low update rates and/or motion blur). This was later confirmed by research on event-based avoidance of static and dynamic obstacles \cite{falanga2020dynamic, sanket2020evdodgeneta, dinaux2021faith, eguiluz2021fly, rodriguez2022free}. Note that the algorithms powering these examples were deployed on conventional computing hardware (e.g., CPUs, GPUs) in all cases.
-
-Robotic examples featuring event-based vision algorithms running on neuromorphic processors are rare, despite their aforementioned potential, and so far have been limited in complexity. Galluppi \textit{et al.}\ presented in \cite{galluppi2014eventbased} a robotic setup in which an event camera was connected to a SpiNNaker processor \cite{furber2014spinnaker} to allow a ground robot to differentiate between two lights flashing a different frequencies. Years later, in \cite{milde2017obstacle}, Milde \textit{et al.}\ designed and deployed an SNN for event-based obstacle avoidance and target acquisition on a ground robot equipped with a ROLLS processor \cite{qiao2015reconfigurable}. The most recent example, and the closest to an aerial robotic context, is the work of Vitale \textit{et al.}\ in \cite{vitale2021eventdriven}. Inspired by \cite{dimitrova2020towards}, the authors deployed an SNN on a Loihi processor \cite{davies2018loihi} on board a bench-fixed dual-rotor to align the roll angle of this platform with a black-and-white disk located in front of an event camera. The SNN was in charge of not only finding the line to align with, but also of implementing the controller for generating the motor commands. Note that, in all these examples, the SNNs were handcrafted and no learning/evolutionary/optimization algorithm of any kind was used in their design.
-
-Lastly, despite not having a camera in the loop, it is still relevant to highlight the neuromorphic research that has recently taken off on low-level control for aerial robots. The works from Stroobants \textit{et al.}\  \cite{stroobants2022design, stroobants2022neuromorphic, stroobants2023neuromorphic} demonstrate the joint potential of (trainable) SNNs and neuromorphic processors to achieve highly efficient, IMU-based state-estimation and control in resource-constrained, aerial platforms. 
+Titles and alternatives:
+\begin{itemize}
+    \item Learning event-based robot vision
+    \item Learning event-based autonomous flight
+    \item Eyes only: autonomous flying robots with just event-based vision
+    \item Eyes only: autonomous flying robots using event-based vision alone
+\end{itemize}
 
 \section{Problem statement and research questions}
 
-%In this thesis, we focus on the neuromorphic computing elements discussed in previous sections in the context of the autonomous flight of a robot. 
-In this thesis, we focus on the neuromorphic computing elements that have been discussed in previous sections, examining their application in the context of flying robots. The aim is to achieve vision-based navigation with an event-based camera and a neuromorphic processor, running an SNN for perception, on board and in the control loop of a robot. This is yet to be accomplished in the literature, mostly due to the inherent complexity of solving real-world, large-scale problems with (trainable) spiking networks that can, in turn, be deployed on neuromorphic processors. Consequently, the core question driving the research conducted in this dissertation can be formulated as follows:
-%Hence, the question that drives the research conducted for this dissertation is the following:
-
 \tcbset{colframe=black!90!, coltitle=white}
-\begin{tcolorbox}[title={\textbf{Driving Research Question}}]
-	How can neuromorphic perception and processing be incorporated into the vision-based, state-estimation pipeline of an autonomous flying robot?
+\begin{tcolorbox}[title={\textbf{Main Research Question}}]
+    How can robots learn to perceive the world with event-based vision in a way that enables effective acting in that world?
 \end{tcolorbox}
 
-This question can be approached from various perspectives since, regardless of the computing paradigm, there is no unique way of providing robots with vision-based navigation capabilities for autonomous flight. Among the available options, this thesis focuses on how this can be achieved using 2D motion information in the image plane, i.e., optical flow \cite{gibson1950perception}. This choice is motivated by two primary reasons. Firstly, optical flow is core to many computer vision algorithms and, in the event-camera domain, it represents a relatively young but active area of research. However, existing literature often emphasizes maximizing accuracy while overlooking algorithm latency \cite{zhu2019unsupervised, gehrig2021raft}. 
-% topic where the literature is mostly centered on maximizing accuracy while overlooking the latency of the algorithms \cite{zhu2019unsupervised, gehrig2021raft}. 
-Therefore, we believe that any contributions made towards our central research question will also be of relevance to the wider computer vision community. Secondly, there is extensive literature that, after drawing (once again) inspiration from flying insects, has demonstrated the potential of optical flow in tasks such as autonomous landing \cite{decroon2013opticflow, decroon2016monocular, Ho2016, ho2018optical}, attitude control \cite{de2022accommodating} or obstacle avoidance \cite{DeCroon2021}. Considering these factors, the specific problem statement for this dissertation is formulated as follows:
+Enables effective acting: to stress that solutions must be portable and low-enough latency for robots to actually be useful.
 
 \tcbset{colframe=black!90!, coltitle=white}
 \begin{tcolorbox}[title={\textbf{Problem Statement}}]
-	How can optical-flow-based autonomous navigation be realized with an event-based camera and a neuromorphic processor in the control loop of a flying robot?
+    How can a flying robot learn to navigate autonomously when it only has event-based vision?
 \end{tcolorbox}
 
-%We will hereby focus on the requirements that are necessary to provide an answer to this question to the best extent possible. To this end, the problem statement was broken down into five research questions, which were tackled sequentially as the research progressed.
+Problem statement: more specific and concrete than main RQ.
 
-Our attention will now shift to the requirements needed to address this question to the best of our ability. In order to achieve this, the problem statement has been subdivided into five research questions, which were addressed in a sequential manner as the research unfolded.
-
-\subsection*{Frame-based perception: Understanding the challenge}
-
-Before making the jump to neuromorphic technology and optical flow, it is of importance to understand the limits and complexities of vision-based autonomous flight with frame-based cameras and conventional computing. One particular scenario that pushes this technology to its limits is autonomous (indoor) drone racing \cite{moon2019challenges}, where flying robots must autonomously navigate a predefined track as quickly as possible using only on-board resources. In such conditions, the maximum speed achievable by the drones is typically determined by the robustness and computational efficiency of the control and perception algorithms, rather than by the physical constraints of the platform itself \cite{de2022hover}. The first research question of this dissertation was then formulated in this context as follows:
+% \subsection*{RQ1}
 
 \tcbset{colframe=black!60!, coltitle=white}
-\begin{tcolorbox}[title={\textbf{RQ1: Research Question 1}}]
-	How can fast, autonomous flight through gates be achieved with frame-based perception and conventional processing in a GPS-denied environment?
+\begin{tcolorbox}[title={\textbf{Research Question 1}}]
+    How can a neural network learn to estimate low-latency optical flow from events in a self-supervised manner?
 \end{tcolorbox}
 
-%This question led to the development of a robust yet efficient, monocular, and frame-based navigation solution for very fast autonomous flying robots. 
+% \subsection*{RQ2}
 
-This question led to the development of a robust yet efficient vision-based navigation solution (frame-based, monocular) for very fast autonomous flying robots. In fact, this solution proved to be successful, as evidenced by our victory in the 2019 Artificial Intelligence Robotic Racing (AIRR) Circuit, where it outperformed other state-of-the-art methods, both monocular and stereo \cite{foehn2020alphapilot}, when deployed on the same robot (i.e., same sensors and processors).
-%In fact, it led to the winning of the 2019 Artificial Intelligence Robotic Racing (AIRR) Circuit, where we outperformed other state-of-the-art vision-based navigation approaches (both monocular and stereo \cite{foehn2020alphapilot}) deployed on the same robot, including sensors and processors. 
-However, this competition also provided first-hand experience on some of the inherent limitations of conventional computing for robotic applications.
-%through this competition, we could experience first-hand the some of the limits of conventional computing for robotic applications.
-%, and the potential of neuromorphic technology to overcome them
-Specifically, motion blur, the limited (and fixed) update rate of the camera, and the need for large amounts of labeled data for our machine learning algorithm were the primary bottlenecks of our approach.
-
-\subsection*{Bridging event-based and frame-based computer vision}
-
-As discussed in \secref{sec:camera}, event cameras react to changes in brightness by generating events with a very high temporal resolution \cite{gallego2019event}. This makes these sensors particularly robust to motion blur issues \cite{jiang2020learning}, but downstream applications, such as the perception algorithm developed for AIRR, remain limited due to the sparse and asynchronous nature of event data. This need to bridge the gap between the event-based and frame-based computer vision domains leads to the second research question:
-
-\begin{tcolorbox}[title={\textbf{RQ2: Research Question 2}}]
-	%	How can event-based optical flow be utilized to learn event-based frame reconstruction in a self-supervised fashion?
-	How can we leverage the knowledge of the inner working of event cameras to learn event-based frame reconstruction in a self-supervised fashion?
+\tcbset{colframe=black!60!, coltitle=white}
+\begin{tcolorbox}[title={\textbf{Research Question 2}}]
+    How can a fully neuromorphic vision-to-control pipeline be realized onboard a flying robot?
 \end{tcolorbox}
 
-The outcome of this research was the development of the first solution to the problem of frame reconstruction from events that, instead of relying on labeled data, leverages the relation between the events, optical flow, and the brightness signal \cite{gallego2019event} to train ANNs in a self-supervised manner. Event-based optical flow was also obtained through SSL using the (at the time) state-of-the-art method from literature \cite{gallego2018unifying, gallego2019focus, zhu2019unsupervised}.
-%the concept of contrast maximization for motion compensation from Gallego \textit{et al.}\ \cite{gallego2018unifying, gallego2019focus} and the proxy loss from Zhu \textit{et al.}\ \cite{zhu2019unsupervised}.
+Maybe call ``fully neuromorphic optical flow control''?
 
-\subsection*{Unsupervised learning for motion-selective SNNs}
+% \subsection*{RQ3}
 
-Despite the potential of the previous solution to reconstruct blur-less images from the events at a much higher rate than frame-based cameras (and the research direction that this unlocks), the downstream algorithms would still be applied on conventional images. This entails losing their potential of being low-latency and low-power since ANNs would be required to perform this events-to-frame conversion as a first stage. For this reason, the third research question directed our attention towards SNNs:% as neural architectures capable of processing events asynchronously, nearly in real-time as they are received from the sensor:
-%For this reason, in the third research question of this dissertation, we focused on SNNs as neural architectures that can asynchronously process the events nearly as they come from the sensor:
-
-% and on optical flow as an end poduct instead of a means to an end.
-
-%\subsection{Unsupervised learning for motion-selective SNNs}
-
-\begin{tcolorbox}[title={\textbf{RQ3: Research Question 3}}]
-	How can a spiking neural network learn to develop event-based motion selectivity in an unsupervised fashion?
+\tcbset{colframe=black!60!, coltitle=white}
+\begin{tcolorbox}[title={\textbf{Research Question 3}}]
+    How can a flying robot learn to estimate depth from events in an online, self-supervised manner?
 \end{tcolorbox}
 
-This third research question led to the development of the first SNN architecture in which selectivity to both local and global motion emerged in an unsupervised manner using event-camera data. The learning rule employed was a novel formulation of STDP, a correlation-based, local plasticity rule inspired by biological processes that, up until this point, had primarily been successful in classification tasks \cite{masquelier2007unsupervised, diehl2015unsupervised, kheradpisheh2018stdp, tavanaei2017multi, shrestha2017stable}. Through this research, we were able to confirm that event cameras and SNNs are an ideal combination, as the latter can extract meaningful patterns from the input events while maintaining high sparsity and low latency levels. However, the absence of supervision posed challenges in controlling the learned features and comparing their performance with other approaches.
+Maybe want to add that this happens on-board? Maybe also use ``neural network'' instead of ``flying robot''?
 
-% The learning rule employed was a novel formulation of STDP (i.e., a correlation-based, local plasticity rule), a bio-inspired algorithm that so far had only been successfully applied to image classification tasks \cite{masquelier2007unsupervised, diehl2015unsupervised, kheradpisheh2018stdp, tavanaei2017multi, shrestha2017stable}. Through this research, we could confirm that event cameras and SNNs are indeed a perfect match, as they are able to extract patterns from the input events while maintaining high sparsity and low latency levels. However, the lack of supervision makes it difficult to, not only control the outcome of the supervision, but also to compare the performance of the learned features with that of other approaches.
+% \subsection*{RQ4}
 
-\subsection*{SSL of low-latency, event-based optical flow with SNNs}
-
-With the aim of improving the robustness of learning event-based optical flow estimation, the fourth research question of this dissertation was formulated as follows:
-
-%With the aim of improving the robustness of learning optical flow estimation, 
-
-\begin{tcolorbox}[title={\textbf{RQ4: Research Question 4}}]
-	How can low-latency, event-based optical flow be learned in a self-supervised fashion with spiking neural networks?% without explicitly integrating temporal information in the input event representation?
+\tcbset{colframe=black!60!, coltitle=white}
+\begin{tcolorbox}[title={\textbf{Research Question 4}}]
+    How can a neural network learn to estimate flight attitude from events, with the goal of replacing inertial sensors?
 \end{tcolorbox}
-
-The outcome of this research was a novel self-supervised pipeline that, by leveraging the knowledge on event-based optical flow and SNNs from previous research questions, allows for the training of models that can be scaled up to high inference frequencies. Contrary to the event-camera literature, which, as aforementioned, is mostly focused on maximizing accuracy, this pipeline targets minimal latency without compromising performance. Backpropagation through time was used to promote SNNs to exploit their internal dynamics to extract motion information from the sparse input events, which are processed nearly as they a triggered.
-
-% The outcome of this research was a novel self-supervised framework for training SNNs to estimate event-based optical flow. Contrary to the event-camera literature, which, as aforementioned, is mostly focused on maximizing accuracy, we focused on minimizing latency without compromising performance. To this end, and as for the previous research question, 
-
-
-\subsection*{Fully neuromorphic pipeline for vision-based flight}
-
-Lastly, what was remaining to provide an answer to the driving research question of this dissertation was to demonstrate the effectiveness of the proposed SSL pipeline in the context of the autonomous flight of a robot. This was done by formulating the fifth and final research question as follows:
-
-\begin{tcolorbox}[title={\textbf{RQ5: Research Question 5}}]
-	How can a spiking neural network be trained in a self-supervised fashion to perform event-based optical flow estimation while running on a neuromorphic processor in the control loop of an autonomous flying robot?
-\end{tcolorbox}
-
-The outcome of this research was the pioneering demonstration of the potential of neuromorphic sensing and processing in achieving vision-based autonomous flight. Specifically, we showed that the proposed SSL pipeline can be used to effectively train SNNs that, when deployed on Intel's Loihi neuromorphic processor \cite{davies2018loihi}, can perform optical-flow-based state estimation with low latency and power consumption, while maintaining high levels of accuracy. This demonstration was conducted in a real-world scenario, where a quadrotor successfully accomplished various tasks, including hovering, landing, and sideways maneuvering, in an autonomous manner. 
-
-\begin{figure}[t!]
-	\centering
-	\includegraphics[width=\linewidth]{04_chapters/Intro/tikz/outline.pdf}
-	\caption{Outline of the rest of this dissertation.}
-	\label{intro:overview}
-\end{figure}
 
 \section{Scope and limitations}
 
-To provide an answer, out of the many possible, to the driving research question of this dissertation, several limitations were imposed on the scope of the conducted research. Some of these limitations were already alluded to in previous sections, but they are summarized here for clarity. Firstly, the research primarily centers around event-based optical flow and its application for estimating the ego-motion of the flying platform. Other uses of optical flow, such as obstacle avoidance, are outside the scope of this thesis. Secondly, the emphasis is on training neural network architectures, including both ANNs and SNNs, without relying on labeled or synthetic data. Therefore, only unsupervised and self-supervised training frameworks are considered, despite the state-of-the-art in most computer vision domains being dominated by pure supervised learning approaches. Lastly, although training without labels unlocks the possibility of refining the models in an online fashion during deployment, what is in the scope of this dissertation is offline (i.e., batch) training. This means training the models on general-purpose processors (e.g., CPUs, GPUs) before deployment. By setting these limitations, the research aims to provide a specific answer to the driving research question while acknowledging and addressing the challenges inherent in the chosen scope.
-
 \section{Outline}
-
-As depicted in \figref{intro:overview}, the subsequent chapters of this dissertation present comprehensive responses to the five research questions derived from the problem statement, ultimately leading to an answer to the driving research question. In \chapref{cha:fr}, we address \textbf{RQ1} by describing the winning solution to the 2019 AIRR autonomous drone racing competition: a monocular vision-based navigation approach designed around the limitations of conventional sensing (i.e., frame-based) and processing (i.e., general-purpose, synchronous) \cite{de2021learning, dewagter2022sensing}. Moving forward, \chapref{cha:cvpr} already takes a leap into event-based cameras and addresses \textbf{RQ2} by focusing on the problem of frame-based reconstruction from the events. This chapter aims to bridge the gap between the event-based and frame-based domains \cite{paredes2021back}, facilitating the application of conventional computer vision algorithms for downstream tasks. Thereafter, the focus is already on estimating event-based optical flow with SNNs, and \chapref{cha:tpami} proposes the first spiking architecture in which selectivity to both local and global motion emerges in an unsupervised fashion from the input events \cite{paredes2020unsupervised}, thus addressing \textbf{RQ3}. To enhance the deployability of the models, \chapref{cha:neurips} describes the first self-supervised framework for training SNNs to estimate low-latency, event-based optical flow \cite{hagenaars2021self}. This pipeline was later extended in \chapref{cha:iccv} \cite{paredes2023taming} to address some of the limitations inherent to learning event-based optical flow in a self-supervised fashion. The combined contributions of these two chapters effectively tackle \textbf{RQ4}. Finally, neuromorphic computing was demonstrated in the context of autonomous flight in \chapref{cha:sr}, where we showed an event-based camera and a neuromorphic processor in the control loop of a flying robot performing optical-flow-based navigation \cite{paredes2023fully}. The neuromorphic processor was used to effectively run the SNN with low latency and power consumption, while maintaining competitive levels of accuracy. This research addresses \textbf{RQ5}. 
-
-To conclude, \chapref{cha:conclusion} provides a summary of the main contributions made throughout the research. It discusses the implications of these contributions and explores potential future research directions in the field of neuromorphic computing for robotics. Lastly, \chapreftwo{cha:tpami21}{cha:icra} present two additional research directions that were explored in parallel to the main research questions. Specifically, \chapref{cha:tpami21} presents a neuropsychology-inspired investigation on how deep neural networks estimate optical flow from frame-based data \cite{de2020neural}. This study provides valuable insights into the limitations and robustness of these architectures, offering recommendations for future work. \chapref{cha:icra}, on the other hand, focuses on demonstrating frame-based optical flow running on ultra-low power computing hardware in the context of vision-based obstacle avoidance for nano flying robots \cite{bouwmeester2022nanoflownet}.

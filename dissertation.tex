@@ -33,7 +33,8 @@
 \newcommand{\eqnreftwo}[2]{Eqs.~\ref{#1} and~\ref{#2}}
 \newcommand{\secreftwo}[2]{Sections~\ref{#1} and~\ref{#2}}
 \newcommand{\figreftwo}[2]{Figs.~\ref{#1} and~\ref{#2}}
-\newcommand{\figrefthree}[3]{Figs.~\ref{#1}, {#2} and~\ref{#3}}
+\newcommand{\figreftwoarg}[4]{Figs.~\ref{#1}#2 and~\ref{#3}#4}
+\newcommand{\figrefthree}[3]{Figs.~\ref{#1}, \ref{#2} and~\ref{#3}}
 \newcommand{\tabreftwo}[2]{Tables~\ref{#1} and~\ref{#2}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\mli}[1]{\mathit{#1}}
@@ -63,8 +64,8 @@
 
 \renewcommand*{\UrlFont}{\color{tudelft-orange}\relax}  %%%%%%%%%%%%%%%%%%%%%% CHANGE
 \begin{document}
-	\title{Self-Supervised Neuromorphic Perception\\\vspace{5pt} for Autonomous Flying Robots}
-	\author{Federico}{Paredes-Vallés}
+	\title{Learning Event-Based Robot Vision}
+	\author{Jesse}{Hagenaars}
 	
 	% REMOVE FOR PRINTING
 	\setcounter{page}{0}\includepdf[pages=-]{coverfront.pdf}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHECK
@@ -86,6 +87,8 @@
 	\include{04_chapters/Intro/main}
 	\include{04_chapters/NeurIPS21/main}
 	\include{04_chapters/SR23/main}
+	\include{04_chapters/CVPR25/main}
+	\include{04_chapters/NPJR25/main}
 	\include{04_chapters/Conclusion/main}
 	% \appendix
 	

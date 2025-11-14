@@ -111,7 +111,7 @@
 \fi
 
 \RequirePackage{paralist}
-\RequirePackage[noabbrev]{cleveref}
+\RequirePackage[noabbrev,capitalize]{cleveref}
 \Crefname{enumi}{Step}{Steps}
 \crefname{enumi}{step}{steps}
 

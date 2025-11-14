@@ -1,5 +1,5 @@
 \chapter{Fully Neuromorphic Vision and Control for Autonomous Drone Flight}
-\label{cha:sr}
+\label{ch:sr}
 
 {\it
 Biological sensing and processing is asynchronous and sparse, leading to low-latency and energy-efficient perception and action. In robotics, neuromorphic hardware for event-based vision and spiking neural networks promises to exhibit similar characteristics. However, robotic implementations have been limited to basic tasks with low-dimensional sensory inputs and motor actions due to the restricted network size in current embedded neuromorphic processors and the difficulties of training spiking neural networks. Here, we present a fully neuromorphic vision-to-control pipeline for controlling a flying drone. Specifically, we train a spiking neural network that accepts raw event-based camera data and outputs low-level control actions for performing autonomous vision-based flight. The vision part of the network, consisting of five layers and 28,800 neurons, maps incoming raw events to ego-motion estimates and is trained with self-supervised learning on real event data. The control part consists of a single decoding layer and is learned with an evolutionary algorithm in a drone simulator. Robotic experiments show a successful sim-to-real transfer of the fully learned neuromorphic pipeline. The drone can accurately control its ego-motion, allowing for hovering, landing, and maneuvering sideways\textemdash even while yawing at the same time. The neuromorphic pipeline runs on board on Intel's Loihi neuromorphic processor with an execution frequency of 200~hertz, consuming 0.94~watts of idle power and a mere additional 7-12~milliwatts when running the network. These results illustrate the potential of neuromorphic sensing and processing for enabling insect-sized intelligent robots.
@@ -298,28 +298,28 @@ Real-world experiments were performed with a custom-built quadrotor carrying the
 
 % We estimate power required for hover flight by flying with a fully charged battery until a certain voltage, keeping track of time, and estimating spent mAh using the value from the charger. During this flight, the UP Squared is powered on (needed for control), and we estimate a power consumption of 277~W. Subtracting the estimated 18~W for the UP Squared makes the 259~W for the remaining components in \tabref{tab:components}. For the Kapoho Bay, we use the numbers from the performed energy benchmark, given that running power is almost equal to idle power. We get power estimates for the UP Squared (version UPS-APLX7-A20-0864) and DVS 240 from online available datasheets.
 
-\begin{table}[!t]
+\begin{table*}[!t]
+    % \small
 	\centering
 	\resizebox{0.85\linewidth}{!}{%
-	\begin{tabular}{@{}llrr@{}}
-		\thickhline
-		\thickhline
-		Component     & Product & Mass [g] & \textasciitilde Power [W]               \\ \midrule
+	\begin{tabular}{llrr}
+		\toprule
+		Component     & Product & Mass [g] & \textasciitilde{}Power [W]               \\ \midrule
 		Frame                  & GEPRC Mark 4 225~mm &  \multirow{5}{*}{508} & \multirow{5}{*}{259}           \\
 		Motor                  & Emax 2306 Eco II Series & &        \\
 		Propellor              & Ethix S5 5~inch  & &               \\
 		Flight Controller      & Pixhawk 4 Mini  &   &              \\
 		ESC                    & SpeedyBee 45A BL32 4in1  &     &   \\ \midrule
-		Battery                & Tattu FunFly 1800mAh 4S  & 195   &  -  \\ \midrule
-		Single-board computer  & UP Squared ATOM Quad Core 08/64  & 202 & 18 \\ \midrule
-		Event-based camera           & DVS 240  & 27     &      1\\ \midrule
+		Battery                & Tattu FunFly 1800mAh 4S  & 195   &  -  \\ %\midrule
+		Single-board computer  & UP Squared ATOM Quad Core 08/64  & 202 & 18 \\ %\midrule
+		Event-based camera           & DVS 240  & 27     &      1\\ %\midrule
 		Neuromorphic processor & Intel Loihi, Kapoho Bay form factor  &  62   &   1\\ 
-		\thickhline
-		\thickhline
-	\end{tabular}}
+		\bottomrule
+	\end{tabular}
+    }
 	\caption{List of hardware components used for the real-world test flights.}
 	\label{tab:sr_components}
-\end{table}
+\end{table*}
 
 \subsection*{Energy benchmark}
 
@@ -348,16 +348,14 @@ Because of the split between the vision and control parts of the pipeline, we ca
 
 \begin{table*}[!t]
 	\centering
-	\resizebox{0.95\textwidth}{!}{%
-		\begin{tabular}{@{}lrrrrr@{}}
-			\thickhline
-			\thickhline
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{lrrrrr}
+			\toprule
 			&  Full image   & +2x Down. & +Corner ROI crop & +Limit events & +Loihi quant. \\ \midrule
-			Conv-GRU ANN                      & 5.88    & 5.56      & 5.61       & 5.72    & -       \\ \midrule
-			Conv-RNN SNN                      & 7.92    & 7.89      & 7.91       & 6.97    & 6.96      \\ \midrule
+			Conv-GRU ANN                      & 5.88    & 5.56      & 5.61       & 5.72    & -       \\ %\midrule
+			Conv-RNN SNN                      & 7.92    & 7.89      & 7.91       & 6.97    & 6.96      \\ %\midrule
 			Self-RNN SNN (ours)                      & 10.79    & 9.80      & 8.22       & 7.71    & \textbf{8.34}      \\ 
-			\thickhline
-			\thickhline
+			\bottomrule
 		\end{tabular}
 	}
 	\caption{Quantitative comparison between different architectures. The value in the bottom right corner, in bold, indicates the final architecture. Row-wise architecture choices and column-wise design decisions affected test accuracy in average endpoint error (EPE, Euclidean distance between predicted and ground-truth vectors, averaged over all pixels in the image; lower is better) in pixels per input window (5~ms). Reported EPEs were averaged over the test sequences and based on a single training run. Baseline architectures feature the same feedforward connectivity pattern as ours but vary the neuron model and the type of recurrent connections. Values in the table should be multiplied by 10\textsuperscript{-2}.}
@@ -428,10 +426,9 @@ Lastly, to demonstrate that our approach transfers to textures other than those 
 
 \begin{table*}[!t]
 	\centering
-	\resizebox{\textwidth}{!}{%
-		\begin{tabular}{@{}lrrrrrrrr@{}}
-			\thickhline
-			\thickhline
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{lrrrrrrrr}
+			\toprule
 			&  Seq.   & Static [W] & Dynamic [W] & Idle [W] & Running [W] & Delta [W] & inf/s & mJ/inf \\ \midrule
 			Nahuku 32 (empty)                      & any    & 0.86      & 0.04       & 0.90    & 0.90       & 4\,e-3     & 60496 & 71\,e-6      \\ \midrule
 			\multirow{3}{*}{Nahuku 32: SNN} & slow   & 0.90      & 0.05       & 0.94    & 0.95       & 12\,e-3     & 1637  & 7\,e-3      \\
@@ -449,8 +446,7 @@ Lastly, to demonstrate that our approach transfers to textures other than those 
 			\multirow{3}{*}{Jetson Nano: ANN (10W)}     & slow   & -          & -           &  1.04   & 3.30       & 2.27     & 83     & 27.36 \\
 			& medium & -          & -           &  1.07   & 3.33       & 2.26     & 80     & 28.09 \\
 			& fast   & -          & -           &  1.07   & 3.30       & 2.23     & 80     & 27.80 \\ 
-			\thickhline
-			\thickhline
+			\bottomrule
 		\end{tabular}
 	}
     \caption{Approximate energy and power characteristics for various devices on three sequences: slow, medium and fast. On average, slow has 28.6 events/inf, medium has 106.9 events/inf, and fast has 186.6 events/inf. Delta power is the difference between idle and running (total) power, and was used to compute energy per inference. Dynamic power is the power needed for switching and short-circuiting, and static power is due to leakage; together they sum to running (total) power as well. Nahuku is a board with 32 Loihi chips (Kapoho Bay has 2). A Nahuku configuration where no spikes were sent and only chips and cores were allocated (no synapses) is included as `empty'. Jetson Nano has a low-power (5W) and high-power (10W) mode. One inference (inf) was the processing of one set of inputs by the network, resulting in an output or prediction. On Jetson Nano, we tested both our vision SNN as well as the comparable Conv-GRU ANN.}
@@ -459,7 +455,7 @@ Lastly, to demonstrate that our approach transfers to textures other than those 
 
 \tabref{tab:sr_energy} shows a comparison in terms of power/energy and runtime between the Loihi neuromorphic processor and an NVIDIA Jetson Nano for running the vision network (both SNN as well as equivalent ANN) on sequences with varying amounts of motion and hence varying input event density. The SNN ran in hardware on Loihi and in software (PyTorch) on Jetson Nano. The tests for Loihi were performed on a Nahuku board, which contains 32 Loihi chips. We confirmed, insofar possible, that using two chips on Nahuku is representative of a Kapoho Bay (at least in terms of execution time), which is the two-chip form factor used on the drone. Still, neither of these benchmarks is completely representative of the tests performed in the real world: the benchmarks used data already loaded in memory, and therefore only quantified the processing by the network without any bottlenecks due to input/output (I/O) and preprocessing, whereas the flight tests involved streaming event data that was coming in and was being processed in an online fashion. This showed in Loihi's execution frequencies in \tabref{tab:sr_energy}, which were well above the 200 inferences (with one inference being the processing of one set of inputs by the network) per second (inf/s) achieved during flight tests.
 
-\tabref{tab:sr_energy} shows the power when the processors were idle and when they were running the networks. Because Jetson Nano does not provide static and dynamic power components, we compared the difference between idle and running power, and used that to compute energy per inference. A main observation is that the Nahuku 32 board consumed 0.95~W when running the SNN, whereas Jetson Nano consumed \textasciitilde 2.98~W when running in 10W mode. This is a difference of a factor \textasciitilde 3.1$\times$. Most of the energy expenditure of Loihi consisted of idle power. \tabref{tab:sr_energy} also shows the difference between the idle power and the power when running the network (`Delta'). When only considering this extra power required for the inference of the network, Loihi outperformed Jetson Nano by three to four orders of magnitude, depending on the sequence. Hence, any possible reduction of the idle power would substantially affect the neuromorphic chip's energy efficiency advantages over other chips. 
+\tabref{tab:sr_energy} shows the power when the processors were idle and when they were running the networks. Because Jetson Nano does not provide static and dynamic power components, we compared the difference between idle and running power, and used that to compute energy per inference. A main observation is that the Nahuku 32 board consumed 0.95~W when running the SNN, whereas Jetson Nano consumed \textasciitilde{}2.98~W when running in 10W mode. This is a difference of a factor \textasciitilde{}3.1$\times$. Most of the energy expenditure of Loihi consisted of idle power. \tabref{tab:sr_energy} also shows the difference between the idle power and the power when running the network (`Delta'). When only considering this extra power required for the inference of the network, Loihi outperformed Jetson Nano by three to four orders of magnitude, depending on the sequence. Hence, any possible reduction of the idle power would substantially affect the neuromorphic chip's energy efficiency advantages over other chips. 
 
 Moreover, Loihi provided a one to two orders of magnitude improvement in execution frequency. Furthermore, the benefits of neuromorphic processing show in Loihi's increasing execution frequency as event sparsity increased (from fast to slow motion sequences).
 Because a GPU like Jetson Nano is not optimized to simulate SNNs, we also ran an equivalent ANN (Conv-GRU with downsampling, corner crop ROI and event limiting from \tabref{tab:sr_AEEchanges}). The increased inference speed for the ANN on Jetson Nano confirms that this is indeed a more suitable architecture for GPUs. Nonetheless, although energy consumption per inference has decreased compared to running the SNN on Jetson Nano, energy efficiency and inference speed still did not come close to those of the SNN on Loihi.
@@ -470,7 +466,7 @@ We presented a fully neuromorphic vision-to-control pipeline for controlling a f
 
 Our study confirms the potential of a fully neuromorphic vision-to-control pipeline by running on board with an execution frequency of 200~Hz. Moreover, the chip spends 0.95~W, out of which 0.94~W is idle power and only 7-12~mW is used for inference. Hence, reducing the idle power can lead to substantial energy gains. 
 
-A major question is whether the energy gain of neuromorphic processing will make a difference on a system level even if future neuromorphic chips weigh in the order of grams and will have a negligible idle power. Compared to the power required for hovering, 277~W, a difference of a few watts (see \tabref{tab:sr_energy}) may seem like a small difference. However, on flying robots, such small differences can have substantial effects \cite{boroujerdian2018mavbench}. A heavier, more power-consuming computing unit does not only require more power from the battery, but it also needs to be lifted in the air. This requires a bigger battery and possibly bigger motors that themselves also have to be lifted. Moreover, as argued in \cite{boroujerdian2018mavbench}, a lower latency, as attained with neuromorphic processing, allows for faster flight. This in turn leads to drones accomplishing their missions with less flight time. Still, the main point is not necessarily what you gain on a \textasciitilde 1-kilogram drone if you switch from a conventional embedded GPU to a lightweight neuromorphic processor (which is not negligible), but that neuromorphic processing will enable many more networks to run on such larger drones and even enable deep neural networks on much lighter platforms that cannot even carry an embedded GPU. An example of the latter are 30-gram flapping wing drones, which use \textasciitilde 6~W to fly~\cite{karasek2018tailless}. 
+A major question is whether the energy gain of neuromorphic processing will make a difference on a system level even if future neuromorphic chips weigh in the order of grams and will have a negligible idle power. Compared to the power required for hovering, 277~W, a difference of a few watts (see \tabref{tab:sr_energy}) may seem like a small difference. However, on flying robots, such small differences can have substantial effects \cite{boroujerdian2018mavbench}. A heavier, more power-consuming computing unit does not only require more power from the battery, but it also needs to be lifted in the air. This requires a bigger battery and possibly bigger motors that themselves also have to be lifted. Moreover, as argued in \cite{boroujerdian2018mavbench}, a lower latency, as attained with neuromorphic processing, allows for faster flight. This in turn leads to drones accomplishing their missions with less flight time. Still, the main point is not necessarily what you gain on a \textasciitilde{}1-kilogram drone if you switch from a conventional embedded GPU to a lightweight neuromorphic processor (which is not negligible), but that neuromorphic processing will enable many more networks to run on such larger drones and even enable deep neural networks on much lighter platforms that cannot even carry an embedded GPU. An example of the latter are 30-gram flapping wing drones, which use \textasciitilde{}6~W to fly~\cite{karasek2018tailless}. 
 
 A particularly promising avenue to autonomous flight of such tiny drones is to make the entire drone sensing, processing, and actuation pipeline neuromorphic, from its accelerometer sensors to the processor and motors, allowing for sparse and event-driven/asynchronous computation all the way through. Because such hardware is currently not available, we have limited ourselves to the vision-to-control pipeline, ending at thrust and attitude commands.
 

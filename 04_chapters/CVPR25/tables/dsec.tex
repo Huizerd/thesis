@@ -1,0 +1,20 @@
+\begin{table}
+      \centering
+      \footnotesize
+      \begin{tabular}{llcccc}
+            \toprule
+                  & & 1PE & 2PE & MAE & RMSE\\
+            \midrule
+            \multirow{2}{*}{\centering SL}
+            & Cho~\textit{et al.}~\cite{cho2025temporal} &  8.966 & 2.345 & 0.501 & 1.175 \\
+            & DSEC baseline~\cite{gehrig2021dsec} & 10.92 & 2.905 & 0.576 & 1.381 \\
+            \hdashline
+            \multirow{2}{*}{\centering SSL}
+            & \textbf{Ours (best scale)} & 82.64 & 66.57 & 4.583 & 5.937\\
+            & \textbf{Ours (approx. scale)} & 84.92 & 70.47 & 4.946 & 6.274\\
+            \bottomrule
+      \end{tabular}
+      % \vspace{-0.5cm}
+      \caption{Quantitative evaluation on the DSEC disparity benchmark. Due to the lack of other monocular SSL (self-supervised learning) methods on the leaderboard, we compare against two representative stereo-based SL (supervised learning) methods.}
+      \label{table:cvpr_dsec}
+\end{table}

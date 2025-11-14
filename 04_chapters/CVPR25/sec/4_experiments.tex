@@ -1,0 +1,66 @@
+\section{Experiments}
+\label{sec:cvpr_experiments}
+
+\subsection{Event-based depth benchmarks}
+
+\begin{figure*}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{04_chapters/CVPR25/cc_figures/dsec-landscape_cr.pdf}
+    \caption{Qualitative results of disparity predictions on the DSEC disparity benchmark. Images are for visualization only, as disparity estimation is event-based. The same color map is applied to the disparity values from the stereo- and supervised-learning-based method from Cho~\textit{et al.}~\cite{cho2025temporal} and our monocular, self-supervised learning method for easy comparison.}
+    \label{fig:cvpr_dsec}
+\end{figure*}
+
+\paragraph{Setup.} We train our proposed network on the training sets with a batch size of 8 and a constant learning rate of 1e-4 with the Adam optimizer for 50 epochs (more details in the supplementary material). We do truncated backpropagation through time, with a backward pass/gradient update conducted every 10 forward passes. Detaching the network while not resetting its state ensures bounded memory usage, mitigates potential gradient explosion/vanishing, and allows the network to retain temporal context effectively. The quantitative evaluations on MVSEC and DSEC are provided in \cref{table:cvpr_mvsec-mae} and \cref{table:cvpr_dsec}.
+
+\input{04_chapters/CVPR25/tables/mvsec}
+\input{04_chapters/CVPR25/tables/dsec}
+
+\paragraph{Results.} On MVSEC, our method outperforms the other two self-supervised, events-only baselines \cite{zhu2019unsupervised, zhu2023selfsupervised}. For context, we also provide the results from the approach in \cite{zhu2023selfsupervised}, which additionally uses intensity frames in the training process for a photometric consistency loss. Although it achieves a higher accuracy, our networks rely solely on event streams during training. For completeness, we also assess the accuracy of dense depth (i.e., not masked by events), as shown in the last row of \cref{table:cvpr_mvsec-mae}.
+
+In the absence of self-supervised methods on the DSEC disparity benchmark, we compare our approach against two top-performing stereo-event-based supervised learning baselines \cite{cho2022selection,gehrig2021dsec}. To convert our monocular unnormalized depth predictions from our network output into metric depth, we apply a scaling factor derived from the ratio of the median predicted depth to the ground truth median from the training set, labeled as ``approx. scale'' in \cref{table:cvpr_dsec}. Additionally, we conduct a grid search on the scaling factor to achieve the highest accuracy on the test set, reported as ``best scale''.
+
+While our accuracy on the DSEC disparity benchmark falls short of supervised baselines, qualitative comparisons in \cref{fig:cvpr_dsec} demonstrate that our approach effectively captures meaningful structures within disparity maps, even without ground truth labels during training. Notably, close objects, such as the car in \texttt{interlaken\_00\_a(540)} and traffic signs in \texttt{thun\_01\_b(400)}, \texttt{interlaken\_01\_a(1680)} and \texttt{zurich\_city\_12\_a(400)}, are accurately represented. Although the boundaries in our results may lack the sharpness achieved by supervised baselines, our approach better preserves contour shapes, such as the front of the car in \texttt{interlaken\_00\_a(540)}, the arc of the tunnel in \texttt{interlaken\_00\_b(560)} and the pole in \texttt{zurich\_city\_13\_a(260)}. This advantage is especially evident for thin objects like the sign pole in \texttt{interlaken\_01\_a(1680)} and \texttt{zurich\_city\_12\_a(440)}, which are often challenging for supervised methods to capture accurately. Additionally, our self-supervised approach can run at higher-than-ground-truth frequencies (100~Hz vs 10~Hz) and is immune to artifacts typically caused by the sporadic availability of ground truth at the image boundaries, resulting in smoother disparity maps free from discontinuity artifacts.
+
+\paragraph{Limitations.} Several factors constrain the accuracy of our methods on these benchmarks, including the reliance on self-supervised learning with events only, a compact network architecture, the use of monocular depth estimation rather than stereo and the imperfect estimation of a scaling factor for converting monocular depth to metric depth. Errors in few-event areas could be reduced by, e.g., including the reconstruction loss from~\cite{paredes-valles2021back}. However, our aim is not to surpass state-of-the-art methods, and we believe the quality of our depth predictions is sufficient to support downstream tasks like robot navigation.
+
+\subsection{Drone experiments}
+
+\paragraph{Setup.} We first pre-train our network on the UZH-FPV dataset~\cite{delmerico2019are} using our self-supervised pipeline. This dataset was chosen for its diverse set of motion trajectories, enabling the network to learn a latent representation that generalizes well across various motion types. After pre-training, the network is deployed on a drone, where online learning (fine-tuning) is performed during flight. The network's forward pass operates at an average speed of 30~Hz, with a backward pass and gradient update conducted every 10 forward passes. During flight experiments, we set the drone to fly at a constant height and a forward speed of 0.5~m/s. The predicted depth is binned and used to control the drone's yaw rate.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.7\linewidth]{04_chapters/CVPR25/cc_figures/tikz-figure4.pdf}
+    \caption{\textbf{Left:} Boxplots of distance between pilot interventions during flight experiments. While using ground truth (GT) depth is best, adding online learning (PT + OL) improves over just pre-training (PT) by \textasciitilde{}30\%. Training from scratch (TFS) does not result in meaningful obstacle avoidance. \textbf{Right:} MAE (mean absolute error) of depth prediction and RSAT (ratio of squared average timestamps, indicates deblurring quality) during online learning in flight. Model checkpoints were saved periodically and evaluated on a test sequence unseen by the model beforehand. 300 learning steps correspond to roughly 100 seconds of training during flight.}
+    \label{fig:cvpr_finetune-metrics-curve}
+    % \vspace{-0.3cm}
+\end{figure}
+
+\paragraph{Results.} We show the quantitative improvements achieved through online learning in \cref{fig:cvpr_finetune-metrics-curve} (right plot), where saved checkpoints are evaluated on a test sequence recorded in the same environment but with different placements for obstacles. The model shows significant improvement not only in the RSAT (ratio of squared average timestamps) metric~\cite{hagenaars2021selfsupervised}, which is strongly correlated with the contrast maximization loss used to optimize the network, but also in MAE (mean absolute error) when compared against ground truth depth. Additionally, the fine-tuning process is efficient, converging within just two minutes of flight.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\linewidth]{04_chapters/CVPR25/cc_figures/finetune_qual_cr.pdf}
+    \caption{Qualitative visualization of disparity map evolution during online learning. Note that the image is for visualization purposes only, as disparity estimation is event-based. The same color map is applied to predictions from all different models for easy comparison. The pre-trained network begins at step 0, followed by 12K steps of online learning (OL) with streaming event data during flight. For comparison, we also show the prediction quality of a randomly initialized network trained from scratch (TFS) for 12K steps.}
+    \label{fig:cvpr_finetune-qual}
+\end{figure}
+
+Qualitative results at different snapshots during online learning are presented in \cref{fig:cvpr_finetune-qual}. Compared to step 0 (the pre-trained model), the disparity values for certain close objects, such as the wall and poles, increase, as evidenced by the brightened colors in those regions. To highlight the benefits of pre-training, we also compare our model with a network initialized with random weights and trained using the same amount of online learning data, as shown in the last row of \cref{fig:cvpr_finetune-qual}. The from-scratch network fails to produce meaningful disparity maps within the flight's limited timespan, underscoring the importance of pre-training in achieving fast and reliable adaptation during online learning.
+
+Finally, we quantify that these improvements in depth estimation through online learning translate to better obstacle avoidance performance in flight experiments. During each experiment, the drone takes off and immediately starts to fly autonomously. A human pilot monitors the flight and intervenes if the drone is in a near collision with an obstacle. After the human pilot corrects for the collision course, the drone is switched to autonomous flying again. 
+
+We compare the distance between pilot interventions for the different experiments in \cref{fig:cvpr_finetune-metrics-curve} (left plot), and show top views of the flight trajectories in \cref{fig:cvpr_trajectory}. When training from scratch (network initialized with random weights), the drone does not avoid obstacles and mostly flies in straight lines. When we start with a pre-trained network, we see actual obstacle-avoiding behavior, and the distance between pilot interventions goes up by \textasciitilde{}65\%. When adding online learning during flight, the distance between interventions improves by a further \textasciitilde{}30\%, and the flight behavior seems to become more diverse. 
+
+\paragraph{Limitations.} The quality of the on-board depth maps is limited by the fact that only a quarter of the camera's 640$\times$480 resolution is used (compare \cref{fig:cvpr_dsec} and \cref{fig:cvpr_finetune-qual}). We mitigate this with an artificially textured environment to ensure sufficient motion-induced events. Higher-quality depth maps, or operation in more natural environments, will require using more of the camera's resolution. 
+
+To further enhance computational efficiency and performance, the nonlinear motion model~\cite{paredes-valles2023taming} could be traded for the cheaper-to-compute linear variant~\cite{hagenaars2021selfsupervised}, at the cost of increased errors on nonlinear event trajectories. Furthermore, inference and learning could be run asynchronously at different rates~\cite{vodisch2023covio}, or only limited to partial network fine-tuning for a few selected layers. Incorporating a jointly optimized flow decoder tail~\cite{yin2018geonet} could also improve depth estimation for dynamic obstacles.
+
+Dynamic objects moving towards the drone would already be avoided by our current pipeline (even though they are not included in training). However, due to the static scene assumption, their depth is underestimated (like the oncoming van in \cref{fig:cvpr_dsec}).
+
+Lastly, The current depth-based yaw control is attracted by corners in the environment, requiring pilot intervention (see the bottom left environment corners in \cref{fig:cvpr_trajectory}). Solving this, or allowing for more complex environments (e.g., higher obstacle density), would require a more advanced control strategy capable of better interpreting depth cues.
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=\linewidth]{04_chapters/CVPR25/cc_figures/tikz-figure3.pdf}
+    \caption{Top-view flight trajectories of various experiments. Blue represents autonomous flight, while orange indicates pilot interventions necessary to prevent collisions/going out of bounds. Training from scratch does not give meaningful obstacle-avoiding behavior. Online learning results in longer autonomous sections and more diverse paths than just pre-training. Using ground truth depth (from RealSense) results in almost-perfect avoidance, and only requires intervention when flying into a corner (limitation of control algorithm).}
+    \label{fig:cvpr_trajectory}
+\end{figure*}

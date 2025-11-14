@@ -1,0 +1,21 @@
+\begin{table*}
+     \centering
+     \footnotesize
+     \begin{tabular}{lcccccc}
+          \toprule
+          &  \multicolumn{3}{c}{\texttt{outdoor\_day1}} & \multicolumn{3}{c}{\texttt{outdoor\_night1}}\\
+          \cmidrule(lr){2-4} \cmidrule(lr){5-7} 
+          Depth cutoff & 10m & 20m & 30m & 10m & 20m & 30m \\
+          \midrule
+          \rowcolor{lightgray} Zhu~\textit{et al.}~\cite{zhu2023selfsupervised}\,\tablefootnote{The network uses events as input but was trained with intensity frames in the loss function. Therefore, it is included as a reference but is not directly comparable to self-supervised methods trained solely on event data.} & {1.40} & {2.07} & {2.65} & {2.18} & {2.70} & {3.64}\\
+          Zhu~\textit{et al.}~\cite{zhu2023selfsupervised} & 3.90 & \underline{3.79} & 4.89 & 5.55 & 4.57 & 5.72\\
+          Zhu~\textit{et al.}~\cite{zhu2019unsupervised} & \underline{2.72} & 3.84 & \underline{4.40} & \textbf{3.13} & \underline{4.02} & \underline{4.89}\\
+          \textbf{Ours} &  \textbf{2.25} & \textbf{3.36} & \textbf{4.23} & \underline{3.25} & \textbf{3.83} & \textbf{4.50} \\
+          \hdashline
+          \textbf{Ours (dense)} & 1.96 & 2.67 & 3.29 & 2.92 & 3.56 & 4.28\\
+          \bottomrule
+     \end{tabular}
+     % \vspace{-0.5cm}
+     \caption{MAE (mean absolute error) of depth prediction in meters on MVSEC test sequences at various depth cutoff distances. The best result is highlighted in bold, and the second best is underlined. The method shown in the shaded row serves as a reference and is not directly comparable to the others, as it also uses image frames.}
+     \label{table:cvpr_mvsec-mae}
+\end{table*}

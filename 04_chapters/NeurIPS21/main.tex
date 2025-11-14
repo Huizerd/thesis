@@ -1,8 +1,8 @@
 \chapter{Self-Supervised Learning of Event-Based Optical Flow with SNNs}
-\label{cha:neurips}
+\label{ch:neurips}
 
 {\it
-Neuromorphic sensing and computing hold a promise for highly energy-efficient and high-bandwidth-sensor processing. A major challenge for neuromorphic computing is that learning algorithms for traditional artificial neural networks (ANNs) do not transfer directly to spiking neural networks (SNNs) due to the discrete spikes and more complex neuronal dynamics. As a consequence, SNNs have not yet been successfully applied to complex, large-scale tasks. In this article, we focus on the self-supervised learning problem of optical flow estimation from event-based camera inputs, and investigate the changes that are necessary to the state-of-the-art ANN training pipeline in order to successfully tackle it with SNNs. More specifically, we first modify the input event representation to encode a much smaller time slice with minimal explicit temporal information. Consequently, we make the network's neuronal dynamics and recurrent connections responsible for integrating information over time. Moreover, we reformulate the self-supervised loss function for event-based optical flow to improve its convexity. We perform experiments with various types of recurrent ANNs and SNNs using the proposed pipeline. Concerning SNNs, we investigate the effects of elements such as parameter initialization and optimization, surrogate gradient shape, and adaptive neuronal mechanisms. We find that initialization and surrogate gradient width play a crucial part in enabling learning with sparse inputs, while the inclusion of adaptivity and learnable neuronal parameters can improve performance. We show that the performance of the proposed ANNs and SNNs are on par with that of the current state-of-the-art ANNs trained in a self-supervised manner. 
+Neuromorphic sensing and computing hold a promise for highly energy-efficient and high-bandwidth-sensor processing. A major challenge for neuromorphic computing is that learning algorithms for traditional artificial neural networks (ANNs) do not transfer directly to spiking neural networks (SNNs) due to the discrete spikes and more complex neuronal dynamics. As a consequence, SNNs have not yet been successfully applied to complex, large-scale tasks. In this chapter, we focus on the self-supervised learning problem of optical flow estimation from event-based camera inputs, and investigate the changes that are necessary to the state-of-the-art ANN training pipeline in order to successfully tackle it with SNNs. More specifically, we first modify the input event representation to encode a much smaller time slice with minimal explicit temporal information. Consequently, we make the network's neuronal dynamics and recurrent connections responsible for integrating information over time. Moreover, we reformulate the self-supervised loss function for event-based optical flow to improve its convexity. We perform experiments with various types of recurrent ANNs and SNNs using the proposed pipeline. Concerning SNNs, we investigate the effects of elements such as parameter initialization and optimization, surrogate gradient shape, and adaptive neuronal mechanisms. We find that initialization and surrogate gradient width play a crucial part in enabling learning with sparse inputs, while the inclusion of adaptivity and learnable neuronal parameters can improve performance. We show that the performance of the proposed ANNs and SNNs are on par with that of the current state-of-the-art ANNs trained in a self-supervised manner. 
 }
 
 \blfootnote{The contents of this chapter have been published in:\\
@@ -52,7 +52,7 @@ Most of the SNN work in other computer vision domains has so far been focused on
 \subsection{Input event representation}\label{sec:neurips_input}
 
 % Contrary to traditional frame-based cameras, which measure the brightness levels of a pixel array at fixed time intervals, a
-An event camera consists of a pixel array that responds, in a sparse and asynchronous fashion, to changes in brightness through streams of events \cite{gallego2020eventbased}. For an ideal camera, an event $\smash{\boldsymbol{e}_i=(\boldsymbol{x}_i,t_i,p_i)}$ of polarity $\smash{p_i\in\{+,-\}}$ is triggered at pixel $\smash{\boldsymbol{x}_i=(x_i,y_i)^T}$ and time $t_i$ whenever the brightness change since the last event at that pixel reaches the contrast sensitivity threshold for that polarity.
+An event camera consists of a pixel array that responds, in a sparse and asynchronous fashion, to changes in brightness through streams of events \cite{gallego2020eventbased}. For an ideal camera, an event $\boldsymbol{e}_i=(\boldsymbol{x}_i,t_i,p_i)$ of polarity $p_i\in\{+,-\}$ is triggered at pixel $\boldsymbol{x}_i=(x_i,y_i)^T$ and time $t_i$ whenever the brightness change since the last event at that pixel reaches the contrast sensitivity threshold for that polarity.
 
 The great majority of learning-based models proposed to date for the problem of event-based optical flow estimation encode, in one form or another, spatiotemporal information into the input event representation before passing it to the neural architectures. This allows stateless (i.e., non-recurrent) ANNs to accurately estimate optical flow at the cost of having to accumulate events over relatively long time windows for their apparent motion to be perceivable. The most commonly used representations make use of multiple discretized frames of event counts \cite{lee2020spikeflownet,lee2022fusionflownet,paredes-valles2021back,stoffregen2020reducing,zhu2019unsupervised} and/or the per-pixel average or the most recent event timestamps \cite{li2021lightweight,ye2020unsupervised,zhu2018evflownet}.
 
@@ -196,13 +196,12 @@ Regarding the SNN variants, the results in \tabref{tab:neurips_flowevluation}, \
 
 \begin{table*}[!t]
 	\centering
-	\resizebox{1\linewidth}{!}{%
+	\resizebox{\linewidth}{!}{%
 		{\renewcommand{\arraystretch}{1.1} 
 			\begin{tabular}{lccccccccccc}
-				\thickhline
-				\thickhline
+				\toprule
 				\multirow{2}{*}{${\text{dt}=1}$} & \multicolumn{2}{c}{outdoor\_day1}&& \multicolumn{2}{c}{indoor\_flying1} && \multicolumn{2}{c}{indoor\_flying2} && \multicolumn{2}{c}{indoor\_flying3}\\\cline{2-3}\cline{5-6}\cline{8-9}\cline{11-12}
-				& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$\\\thickhline
+				& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$\\\midrule
 				EV-FlowNet$^*$ \cite{zhu2018evflownet}& 0.49 & 0.20 && 1.03 & 2.20 && 1.72 & 15.10 && 1.53 & 11.90 \\
 				EV-FlowNet$^*$ \cite{zhu2019unsupervised}& \textbf{0.32} & \textbf{0.00} && \textbf{0.58} & \textbf{0.00} && \textbf{1.02} & \textbf{4.00} && \textbf{0.87} & \textbf{3.00} \\
 				Hybrid-EV-FlowNet$^*$ \cite{lee2020spikeflownet}& 0.49 & - && 0.84 & - && 1.28 & - && 1.11 & - \\\hdashline
@@ -220,9 +219,9 @@ Regarding the SNN variants, the results in \tabref{tab:neurips_flowevluation}, \
 				ALIF-FireNet & 0.62 & 0.45 && 1.04 & 3.02 && 1.85 & 18.88 && 1.58 & 15.00 \\
 				PLIF-FireNet & 0.56 & 0.38 && 0.90 & 1.93 && 1.67 & 14.47 && 1.41 & 11.17 \\
 				XLIF-FireNet & 0.54 & 0.34 && 0.98 & 2.75 && 1.82 & 18.19 && 1.54 & 14.57 \\
-				\thickhline
+				\midrule
 				\multirow{2}{*}{${\text{dt}=4}$} & & && & && & && & \\
-				& & && & && & && & \\\thickhline
+				& & && & && & && & \\\midrule
 				EV-FlowNet$^*$ \cite{zhu2018evflownet}& \underline{1.23} & \textbf{7.30} && 2.25 & 24.70 && 4.05 & 45.30 && 3.45 & 39.70 \\
 				EV-FlowNet$^*$ \cite{zhu2019unsupervised}& 1.30 & \underline{9.70} && \underline{2.18} & 24.20 && \underline{3.85} & 46.80 && 3.18 & 47.80 \\
 				Hybrid-EV-FlowNet$^*$ \cite{lee2020spikeflownet}& \textbf{1.09} & - && 2.24 & - && \textbf{3.83} & - && 3.18 & - \\\hdashline
@@ -240,10 +239,10 @@ Regarding the SNN variants, the results in \tabref{tab:neurips_flowevluation}, \
 				ALIF-FireNet & 2.36 & 25.82 && 3.94 & 52.35 && 6.65 & 67.61 && 5.60 & 61.93 \\
 				PLIF-FireNet & 2.11 & 20.64 && 3.44 & 44.02 && 5.94 & 64.02 && 4.98 & 57.53 \\
 				XLIF-FireNet & 2.07 & 18.83 && 3.73 & 47.89 && 6.51 & 67.25 && 5.43 & 60.59 \\
-				\thickhline
-				\thickhline
+				\bottomrule
 				\multicolumn{12}{l}{\small $^*$Non-recurrent ANNs with input event representations encoding spatiotemporal information, as described in \cite{lee2020spikeflownet,zhu2018evflownet,zhu2019unsupervised}.}
-	\end{tabular}}}
+	\end{tabular}}
+	}
 \caption{Quantitative evaluation on MVSEC \cite{zhu2018multivehicle}. Best in bold, runner up underlined.}
 \label{tab:neurips_flowevluation}
 \end{table*}
@@ -314,10 +313,9 @@ Apart from the quantitative and qualitative evaluation on the MVSEC dataset \cit
 	\resizebox{\linewidth}{!}{%
 		{\renewcommand{\arraystretch}{1.1} 
 			\begin{tabular}[b]{lccccc}
-				\thickhline
-				\thickhline
+				\toprule
 				& \multicolumn{2}{c}{ECD}&&\multicolumn{2}{c}{HQF}\\
-				\cline{2-3}\cline{5-6}&FWL$\uparrow$&RSAT$\downarrow$&&FWL$\uparrow$&RSAT$\downarrow$ \\\thickhline
+				\cline{2-3}\cline{5-6}&FWL$\uparrow$&RSAT$\downarrow$&&FWL$\uparrow$&RSAT$\downarrow$ \\\midrule
 				EV-FlowNet & 1.31 & \textbf{0.94} && 1.37 & \textbf{0.92} \\
 				RNN-EV-FlowNet & 1.36 & \underline{0.95} && 1.45 & \underline{0.93} \\
 				Leaky-EV-FlowNet & 1.34 & \underline{0.95} && 1.39 & \underline{0.93} \\
@@ -332,8 +330,7 @@ Apart from the quantitative and qualitative evaluation on the MVSEC dataset \cit
 				ALIF-FireNet & 1.35 & 1.00 && \underline{1.49} & 1.00 \\
 				PLIF-FireNet & 1.30 & 0.97 && 1.35 & 0.98 \\
 				XLIF-FireNet & 1.29 & 0.99 && 1.39 & 0.99 \\
-				\thickhline
-				\thickhline
+				\bottomrule
 	\end{tabular}}}
 	\captionof{table}{Quantitative evaluation on the ECD \cite{mueggler2017eventcamera} and HQF \cite{stoffregen2020reducing} datasets. Best in bold, runner up underlined.}
 	\label{tab:neurips_flow}
@@ -416,13 +413,12 @@ Firstly, from these results, we can conclude that stateless ANNs (such as FireFl
 
 \begin{table*}[!t]
 	\centering
-	\resizebox{1\linewidth}{!}{%
+	\resizebox{\linewidth}{!}{%
 		{\renewcommand{\arraystretch}{1.1} 
 			\begin{tabular}{lccccccccccc}
-				\thickhline
-				\thickhline
+				\toprule
 				\multirow{2}{*}{${\text{dt}=1}$} & \multicolumn{2}{c}{outdoor\_day1}&& \multicolumn{2}{c}{indoor\_flying1} && \multicolumn{2}{c}{indoor\_flying2} && \multicolumn{2}{c}{indoor\_flying3}\\\cline{2-3}\cline{5-6}\cline{8-9}\cline{11-12}
-				& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$\\\thickhline
+				& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$&& EPE$\downarrow$ & $\%_{\text{Outlier}}$$\downarrow$\\\midrule
 				FireNet & \underline{0.55} & \textbf{0.35} && \textbf{0.89} & \textbf{1.93} && \textbf{1.62} & \textbf{14.65} && \textbf{1.35} & \textbf{10.64} \\
 				Leaky-FireNet & \textbf{0.52} & 0.41 && \underline{0.90} & 2.66 && \underline{1.67} & \underline{16.09} && \underline{1.43} & 13.16\\
 				LIF-FireNet & 0.57 & \underline{0.40} && 0.98 & \underline{2.48} && 1.77 & 16.40 && 1.50 & \underline{12.81} \\
@@ -430,9 +426,9 @@ Firstly, from these results, we can conclude that stateless ANNs (such as FireFl
 				FireFlowNet & 1.02 & 1.62 && 1.37 & 6.86 && 2.24 & 25.74 && 2.00 & 21.09 \\
 				Leaky-FireFlowNet & 0.61 & 0.56 && 0.97 & 2.71 && 1.76 & 17.68 && 1.52 & 14.16 \\
 				LIF-FireFlowNet & 0.84 & 1.15 && 1.22 & 5.55 && 2.06 & 22.25 && 1.80 & 18.13 \\
-				\thickhline
+				\midrule
 				\multirow{2}{*}{${\text{dt}=4}$} & & && & && & && & \\
-				& & && & && & && & \\\thickhline
+				& & && & && & && & \\\midrule
 				FireNet & \underline{2.04} & \underline{20.93} && \textbf{3.35} & \underline{42.50} && \textbf{5.71} & \underline{61.03} && \textbf{4.68} & \underline{53.42} \\
 				Leaky-FireNet & \textbf{1.96} & \textbf{18.26} && \underline{3.42} & \textbf{42.03} && \underline{5.92} & \textbf{58.80} && \underline{4.98} & \textbf{52.57}\\
 				LIF-FireNet & 2.12 & 21.00 && 3.72 & 48.27 && 6.27 & 64.16 && 5.23 & 58.43\\
@@ -440,8 +436,7 @@ Firstly, from these results, we can conclude that stateless ANNs (such as FireFl
 				FireFlowNet & 3.88 & 55.47 && 5.29 & 68.37 && 8.26 & 79.42 && 7.33 & 78.69 \\
 				Leaky-FireFlowNet & 2.29 & 24.22 && 3.68 & 47.12 && 6.29 & 62.30 && 5.37 & 58.29 \\
 				LIF-FireFlowNet & 3.24 & 43.08 && 4.67 & 60.34 && 7.54 & 74.68 && 6.54 & 71.45 \\
-				\thickhline
-				\thickhline
+				\bottomrule
 	\end{tabular}}}
 \caption{Quantitative evaluation of FireNet and FireFlowNet variants on MVSEC \cite{zhu2018multivehicle}. Best in bold, runner up underlined.}
 \label{tab:neurips_flowablation}
@@ -468,19 +463,17 @@ Looking at the learned leaks also gives us insight into how information is integ
 			\centering
 			\centering
 			\vspace{-100pt}
-			\resizebox{1\linewidth}{!}{%
+			\resizebox{\linewidth}{!}{%
 				{\renewcommand{\arraystretch}{1.1} 
 					\begin{tabular}{lcccc}
-						\thickhline
-						\thickhline
+						\toprule
 						Learnable thresholds & & X & & X\\
-						Learnable leaks & & & X & X\\\thickhline
+						Learnable leaks & & & X & X\\\midrule
 						outdoor\_day1 & 0.65 & 0.68 & \textbf{0.57} & \underline{0.58} \\
 						indoor\_flying1 & 1.14 & 1.04 & \underline{0.97} & \textbf{0.96} \\
 						indoor\_flying2 & 1.88 & 1.89 & \textbf{1.70} & \underline{1.82} \\
 						indoor\_flying3 & 1.62 & 1.61 & \textbf{1.45} & \underline{1.52} \\
-						\thickhline
-						\thickhline
+						\bottomrule
 %						\vspace{50pt}
 			\end{tabular}}}
 		\captionof{table}{Ablation study on learnable parameters for SNNs on MVSEC \cite{zhu2018multivehicle} using variants of LIF-FireNet. We report the EPE$\downarrow$ for $\text{dt}=1$. Best in bold, runner up underlined.}

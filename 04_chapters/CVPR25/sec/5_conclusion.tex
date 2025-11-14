@@ -1,0 +1,10 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this chapter, we have improved the efficiency of self-supervised learning of monocular depth estimation from events, such that on-device learning of low-latency monocular depth and ego-motion becomes feasible. The proposed approach features more efficient and parallel processing, and has been implemented in CUDA instead of PyTorch. For common event rates (0.1-1~Mev/s) this reduces runtime by 100x, while using 2-5x less memory---improvements that would also transfer to other pipelines involving warping/splatting of events~\cite{shiba2024secrets,falanga2020dynamic,paredes-valles2021back} and images~\cite{niklaus2023splattingbased}. 
+
+When trained and benchmarked on event camera datasets, our small recurrent network outperforms other self-supervised approaches and captures essential structures with sufficient quality to support downstream navigation tasks. Furthermore, we demonstrate that online learning on board a small flying drone leads to improved depth estimates within two minutes of learning, leading to more successful obstacle avoidance (\textasciitilde{}30\% improvement in distance between pilot interventions).
+
+Our work taps into the unused potential of on-board, online self-supervised learning. The current results already demonstrate that online learning leads to better performance in the operational environment. While SSL still needs further improvements to match supervised baselines, its core advantages---pretraining on large unlabeled datasets and finetuning directly in the test environment---hold the key to truly robust autonomous robot deployment across diverse real-world settings.
+
+% \paragraph{Acknowledgments.} The authors would like to thank the reviewers for their constructive feedback and suggestions. This work was supported by funding from NWO (NWA.1292.19.298), the Air Force Office of Scientific Research (award no. FA8655-20-1-7044) and the Office of Naval Research Global (award no. N629092112014).

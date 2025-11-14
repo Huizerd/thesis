@@ -1,5 +1,5 @@
 \chapter{On-Device Self-Supervised Learning of Low-Latency Monocular Depth from Only Events}
-\label{cha:cvpr}
+\label{ch:cvpr}
 
 {\it
 Event cameras provide low-latency perception for only milliwatts of power. This makes them highly suitable for resource-restricted, agile robots such as small flying drones. Self-supervised learning based on contrast maximization holds great potential for event-based robot vision, as it foregoes the need for high-frequency ground truth and allows for online learning in the robot's operational environment. However, online, on-board learning raises the major challenge of achieving sufficient computational efficiency for real-time learning, while maintaining competitive visual perception performance. In this work, we improve the time and memory efficiency of the contrast maximization pipeline, making on-device learning of low-latency monocular depth possible. We demonstrate that online learning on board a small drone yields more accurate depth estimates and more successful obstacle avoidance behavior compared to only pre-training. Benchmarking experiments show that the proposed pipeline is not only efficient, but also achieves state-of-the-art depth estimation performance among self-supervised approaches. Our work taps into the unused potential of online, on-device robot learning, promising smaller reality gaps and better performance.
@@ -7,14 +7,30 @@ Event cameras provide low-latency perception for only milliwatts of power. This 
 
 \blfootnote{The contents of this chapter have been published in:\\
 	\vspace{-10pt}\begin{blockquote}
-		\textbf{J.\ J.\ Hagenaars}$^\dagger$, F.\ Paredes-Vall\'es$^\dagger$, G.\ C.\ H.\ E.\ de Croon, \emph{Self-supervised learning of event-based optical flow with spiking neural networks}, Advances in Neural Information Processing Systems (NeurIPS), 2021.
+		\textbf{J.\ J.\ Hagenaars}, Y.\ Wu, F.\ Paredes-Vall\'es, S.\ Stroobants, G.\ C.\ H.\ E.\ de Croon, \emph{On-Device Self-Supervised Learning of Low-Latency Monocular Depth from Only Events}, IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2025.
 	\end{blockquote}%\vspace{-10pt}
-	{\scriptsize$\dagger$~~Equal contribution, with alphabetical ordering.}\\
-	$\text{}$\\
-	\textbf{Contribution:} The research in this chapter was a collaborative effort with dr. Federico Paredes-Vall\'es from the Micro Air Vehicle Laboratory (Delft University of Technology). We both contributed equally to the conception of the study, to performing the experiments, and to the analysis of the results. My main contribution lay in the training and implementation of the spiking neural networks, while Fede developed the self-supervised framework for learning low-latency, event-based optical flow.
+	% $\text{}$\\
+	% \textbf{Contribution:} The research in this chapter was a collaborative effort with Federico Paredes-Vall\'es from the Micro Air Vehicle Laboratory (Delft University of Technology). We both contributed equally to the conception of the study, to performing the experiments, and to the analysis of the results. My main contribution lay in the training and implementation of the spiking neural networks, while Fede developed the self-supervised framework for learning low-latency, event-based optical flow.
 }
 
 \newpage
 \thispagestyle{empty}
 \phantom{blabla}
 \newpage
+
+\input{04_chapters/CVPR25/sec/1_intro}
+\input{04_chapters/CVPR25/sec/2_related}
+\input{04_chapters/CVPR25/sec/3_method}
+\input{04_chapters/CVPR25/sec/4_experiments}
+\input{04_chapters/CVPR25/sec/5_conclusion}
+
+\section*{Supplementary material}
+\vspace{10pt}
+
+\newlist{mylist_cvpr}{itemize}{1}
+\setlist[mylist_cvpr]{label=\hspace{0pt}}
+\newcommand\itemonecvpr{\item \qrcode[height=0.4in]{https://mavlab.tudelft.nl/depth_from_events}}
+
+\begin{mylist_cvpr}[leftmargin=*, align=left, leftmargin=2em, itemindent=0pt, labelsep=0pt, labelwidth=2em]
+	\itemonecvpr\quad Project page: \url{https://mavlab.tudelft.nl/depth_from_events}
+\end{mylist_cvpr}

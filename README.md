@@ -1,84 +1,141 @@
-# Improved TU Delft PhD Thesis Template
+# PhD Thesis: Learning Event-Based Robot Vision
 
-This is an improved version of the [TU Delft PhD thesis
-template](https://www.tudelft.nl/en/tu-delft-corporate-design/downloads/). It
-features a large number of changes to increase both on- and off-screen
-readability and quality, as well as reduce printing costs. It is a
-double-sided, colored dissertation style with hyperlinks (although many of
-these parameters can be easily changed).
+This repository contains the PhD thesis dissertation of Jesse J. Hagenaars, titled "Learning Event-Based Robot Vision", defended at TU Delft.
 
-## How to Pay Attribution
+## Building the Dissertation
 
-I did not create the original template. However, I would appreciate it
-if you did keep the note that you are using this adopted version of
-the template. Moreover, would you send me a message (moritzbeller -AT-
-gmx -DOT- de) or create an issue/PR that you are using this style,
-together with your expected defense date, university and research
-group?
+This dissertation is compiled using pdfLaTeX. To build the PDF:
 
-## Theses Using This Style
-* [Moritz Beller](https://repository.tudelft.nl/islandora/object/uuid:b2946104-2092-42bb-a1ee-3b085d110466/datastream/OBJ/download), 2018-11-23, Software Engineering Research Group, TU Delft
-* [Anand Sawant](https://doi.org/10.4233/uuid:3d7bc400-2447-4a88-8768-3025d7b54b7f), 2019-10-10, Software Engineering Research Group, TU Delft
-* Davide Spadini, Software Engineering Research Group, 2021, TU Delft
-* Vladimir Kovalenko, Software Engineering Research Group, 2021, TU Delft
-* Alex Salazar, Computer Science Intelligent Systems, TU Delft 
+```bash
+# Standard compilation sequence
+pdflatex dissertation
+bibtex dissertation
+pdflatex dissertation
+pdflatex dissertation
+```
 
-## Style
+For the propositions document:
 
-Here is a side-by-side comparison of the two styles.
+```bash
+pdflatex propositions
+```
 
-| Old Style       |  New (this template) |
-:----------------:|:---------------------:
-![](readme-pics/prev_chapter.png) | ![](readme-pics/new_chapter.png)
-![](readme-pics/prev_page.png) | ![](readme-pics/new_page.png)
+To clean temporary LaTeX build files:
 
+```bash
+python clean.py
+```
 
-To get a full picture of how this style looks, have a look at [my PhD
-thesis](https://repository.tudelft.nl/islandora/object/uuid:b2946104-2092-42bb-a1ee-3b085d110466?collection=research),
-which is set using the defaults in this repository. Note that there
-are small differences between the online and print versions (such as
-cutter's marks to trim pages and page alignment on the print
-version). These are hard to get right, and I optimized them using two
-physical proof prints of my thesis.
+### Document Options
 
-The layout in this repository is very well-readable, but rather close
-to the low limits for font size and page utilization that I would use
-(i.e., if anything, I would recommend to increase font size, line
-height or page margins).
+The dissertation class supports two main modes (configured in `dissertation.tex` line 1):
 
-## Key Improvements
+- **Screen version** (default): `\documentclass{dissertation}`
+  - Optimized for on-screen reading with hyperlinks
+  - No binding offset adjustment
 
-Specifically, the changes in this template make these key improvements
-over the TU Delft dissertation house style: It ...
+- **Print version**: `\documentclass[print]{dissertation}`
+  - Optimized for physical printing with binding offset
+  - Use this when preparing the final print version
 
-- actually compiles (see CI).
-- has been used successfully in my dissertation and been approved by the TU Delft Graduate School.
-- makes the page layout much better suited to printing, because of an increased binding offset width. Text does not go into the binding fold of the book. The writable part of the page is also centered better when printed.
-- uses much nicer fonts for on- and off-screen readability, namely [Libertinus](https://github.com/libertinus-fonts/libertinus) for regular text and [Inconsolata](https://fonts.google.com/specimen/Inconsolata) for mono-spaced elements such as source code listings.
-- comes with a large list of already included packages, placed in a compatible order (some LaTeX package orders cause hard-to-debug compile errors).
-- reduces the number of pages that need color, thus reducing printing costs, while pertaining TU Delft's signature blue for key elements such as chapter titles.
-- makes for more crisp printing, by converting 90% gray anthracite to a fully black tone. Gray scale values between 30% and 90% typically look blurry or faint in print because the printer simply uses less ink for them. To cater for this, I reduced the header text size to not interfere with the running text below.
-- keeps a consistent style of reporting page numbers on top of pages.
-- makes the screen and print versions of the PDF resemble each other more, while keeping the respective benefits of each format (for example, for on-screen PDFs, no offset binding adjustment is needed).
-- makes the propositions page now fit a bigger amount of text. Moreover, the format of the propositions page now fits inside the thesis, instead of being the same size (which would stand out!).
-- changes a couple of questionable defaults, such as the copyright notice by the author.
-- uses glyphs and symbols to refer to papers, and gives presets for the CV, list of publications and the IPA dissertation series.
-- includes commands to generate ready-to-be-printed PDFs with all fonts embedded, a typical requirement to publish PDFs.
-- is also highly recommend to use the [LaTeX URL Eternalizer](https://github.com/Inventitech/url-eternalizer).
-- comes with a useful set of predefined commands, such as `circled`, `ahref` and useful predefines for `lstlisting` and such. 
+**Important**: Before sending to the printer, change to the `[print]` option and uncomment the cover page includes in `dissertation.tex`.
 
-## Setup and Installation
+### Print-Ready PDF
 
-See the original [README](README.txt).
+To create a print-ready PDF with all fonts embedded (required by most publishers):
 
-There are three document options to the provided dissertation.cls style -- be sure to use `print` when sending to the printer.
+```bash
+gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -sOutputFile=dissertation_print.pdf -f dissertation.pdf
+```
 
-Mac users will have to install the Libertinus and Inconsolata fonts on their systems.
+## Structure
 
-## Version
+The dissertation follows a paper-based structure:
 
-This template is based on commit `ff9d073` of TU Delft's template
-(dissertation template from July 2nd, 2015, strangely referred to in
-the TeX document as '2013/07/08 v1.0 TU Delft dissertation class'),
-which was the latest available on 13-11-2018. Unfortunately, I did not
-have access to their repository.
+```
+04_chapters/
+├── Intro/          - Introduction
+├── NeurIPS21/      - Self-Supervised Learning of Event-Based Optical Flow with SNNs (NeurIPS 2021)
+├── SR23/           - Event-Based Vision Meets Deep Learning on Autonomous Racing (Science Robotics 2023)
+├── CVPR25/         - Chapter from CVPR 2025
+├── NPJR25/         - Chapter from Nature Portfolio 2025
+└── Conclusion/     - Conclusion
+```
+
+Each chapter contains:
+- `main.tex` - Main chapter content
+- `figures/` - Chapter-specific figures and images
+
+## Template Attribution
+
+This dissertation uses a modified version of Moritz Beller's [improved TU Delft PhD thesis template](https://github.com/Inventitech/phd-thesis-template), which itself is based on the [official TU Delft dissertation template](https://www.tudelft.nl/en/tu-delft-corporate-design/downloads/).
+
+### Key Template Features
+
+The template includes several improvements over the original TU Delft house style:
+
+- Improved page layout with proper binding offset for physical printing
+- Libertine fonts for better on- and off-screen readability
+- Reduced color usage to minimize printing costs
+- Consistent page numbering and header styles
+- Pre-configured LaTeX packages in compatible order
+- Custom commands for figures, citations, and cross-references
+- Support for both screen and print versions
+
+### Original Template Credits
+
+- **Original TU Delft template**: TU Delft (2013/07/08 v1.0)
+- **Improved template**: Moritz Beller (2018/11/13 v2.0)
+  - Based on commit `ff9d073` from July 2nd, 2015
+  - See [Moritz Beller's thesis](https://repository.tudelft.nl/islandora/object/uuid:b2946104-2092-42bb-a1ee-3b085d110466) for an example
+
+## Requirements
+
+### LaTeX Distribution
+
+A full TeX Live or MiKTeX installation is required. Key packages include:
+
+- `libertine`, `libertinust1math` - Fonts
+- `natbib` - Bibliography management
+- `hyperref` - Hyperlinks and cross-references
+- `tikz`, `xcolor` - Graphics
+- `booktabs`, `caption`, `subcaption` - Tables and figures
+- Many others (see `dissertation.cls` for full list)
+
+### Linux (Debian/Ubuntu)
+
+```bash
+sudo apt-get install texlive texlive-fonts-extra texlive-latex-extra texlive-science
+```
+
+### macOS
+
+Install [MacTeX](https://www.tug.org/mactex/) or BasicTeX with required packages.
+
+### Windows
+
+Install [MiKTeX](https://miktex.org/), which will automatically install required packages on first compilation.
+
+## Utility Scripts
+
+### clean.py
+
+Removes temporary LaTeX build files (`.aux`, `.log`, `.out`, `.bbl`, etc.) recursively from all subdirectories.
+
+### pdf2png.py
+
+Converts specified PDF figures to PNG at a given resolution:
+
+```bash
+python pdf2png.py 300  # 300 DPI
+```
+
+Edit the script to specify which figures to convert.
+
+## License and Usage
+
+The dissertation content is © Jesse J. Hagenaars. The LaTeX template is based on Moritz Beller's improved template, which builds upon the original TU Delft template.
+
+If you use this template, please:
+1. Keep attribution to the original template authors
+2. Consider notifying Moritz Beller (moritzbeller -AT- gmx -DOT- de) of your usage

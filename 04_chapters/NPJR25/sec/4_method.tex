@@ -1,0 +1,101 @@
+\section{Methods}
+\label{sec:methods}
+
+\subsection*{Estimating attitude and rotation rate from events}
+
+
+
+The analysis by De Croon et al.~\cite{decroon2022accommodating} shows that a drone's flight attitude can be extracted from optical flow when combined with a motion model. Many conditions are analyzed. In the simplest case, they derive local observability from the ventral optical flow component $\omega_y$ for roll $\phi$ and a simple motion model that relates attitude angles to acceleration direction:
+\begin{align}
+    \omega_y &= - \frac{\cos^2(\phi)\upsilon_y }{z} + p \label{eq:npjr_g1} \\
+    f(\boldsymbol{x}, u) &=
+    \begin{bmatrix}
+        \dot{\upsilon}_y \\
+        \dot{\phi} \\
+        \dot{z}
+    \end{bmatrix} = 
+    \begin{bmatrix}
+        g\tan(\phi) \\
+        p \\
+        0
+    \end{bmatrix} \label{eq:npjr_g2}
+\end{align}
+
+where state $\boldsymbol{x} = [\upsilon_y,\phi,z]^T$, control input $u=p$, $z$ represents the height above ground, $\upsilon_y$ is the velocity in the body frame's $y$-direction, and $p$ denotes the roll rate. This relationship holds for $\phi \in (\ang{-90},\ang{90})$, and the same derivation can be made for $\omega_x$ and pitch $\theta$. Although this model assumes constant height, they show extensions for changing height and uneven/sloped environments. In those, the divergence of the optical flow field can be used to observe variation in height, maintaining the partial observability of the system. The system is only partially observable, since attitude becomes unobservable at angles and rates close to zero, for instance when the drone is hovering in place. Nevertheless, the parts of the state space that make the system unobservable are inherently unstable and drive the system to observable states, thus closing the loop. 
+
+While \cref{eq:npjr_g1,eq:npjr_g2} treat the rotation rate $p$ as a known control input (from gyro measurements), this is theoretically not necessary, and a prediction of the moments $M$ resulting from control inputs suffices~\cite{decroon2022accommodating}:
+\begin{equation}
+    f(\boldsymbol{x}, u) =
+    \begin{bmatrix}
+        \dot{\upsilon}_y \\
+        \dot{\phi} \\
+        \dot{p} \\
+        \dot{z}
+    \end{bmatrix} = 
+    \begin{bmatrix}
+        g\tan(\phi) \\
+        p \\
+        M/I \\
+        0
+    \end{bmatrix}
+\end{equation}
+
+where $I$ is the moment of inertia around the relevant axis. In our approach, motor speeds as input could replace $M$ and the network could learn an internal motion model to obtain attitude. However, this is not guaranteed, and as the successful flight tests with a vision-only network show, not necessary either when using a machine learning approach.
+Learned models exploit other factors, as may insects. We explore one of these factors (a large field of view) in this article.
+A large field of view enables proper separation of translational and rotational flow, which allows more accurate extraction of control inputs from vision. As described above, these control inputs allow for the system to be observable.
+
+\subsubsection*{Training and network details}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{04_chapters/NPJR25/images/architecture.pdf}
+    \caption{Schematic overview of network architectures. Left: baseline vision-only network. Right: network with vision and an auxiliary input (motor speeds, rotation rates). Encoder (E), memory (M) and decoder (D) are convolutional. Flattening to attitude and rotation rate estimates happens in the predictor (P). We swap the memory for a feedforward (F) block to get a network without recurrency. For the auxiliary input, we use fully connected (FM) instead of convolutional memory.}
+    \label{fig:npjr_networks}
+\end{figure}
+
+We train a small recurrent convolutional network to estimate flight attitude and rotation rate from events. Training is done in a supervised manner, with attitude and rate labels coming from the flight controller's state estimation EKF(extended Kalman filter, running at 200~Hz). We collect training data containing diverse motions and attitudes in our indoor flight arena ``CyberZoo''. We make use of two-channel event count frames as input to the network, with each frame containing 5~ms of events. For training, we take random slices of 100 frames from a sequence, and use truncated backpropagation through time on windows of 10 frames without resetting the network's memory. This is done to get a network that (i) accumulates temporal information internally for proper rate estimation, and (ii) can keep estimating stably beyond the length of the window it was trained on. We train until convergence using an MSE (mean squared error) loss, Adam optimizer and a learning rate of 1e-4. We add a weight of 10 to the attitude loss to make it similar in magnitude to the rate loss. Data augmentation consists of taking random slices of frames, randomly flipping event frames (and labels accordingly) in the channel dimension (polarity flips), height (up-down flips) and width (left-right flips). For evaluation, we run networks on full sequences without resetting, and we evaluate in terms of RMSE (root mean square error) and MASD (mean absolute successive difference):
+\begin{align}
+    \text{RMSE} &= \sqrt{\frac{1}{n}\sum_{i=1}^n \left(y_i - \hat{y}_i\right)^2} \\
+    \text{MASD} &= \frac{1}{n-1}\sum_{i=1}^{n-1} \lvert x_{i+1} - x_i \rvert
+\end{align}
+
+The baseline network has 425k parameters and consists of an 8$\times$-downsampling encoder followed by a GRU (gated recurrent unit) memory block and a decoder transforming the memory into angle and rate predictions. The encoder and memory are convolutional to stimulate the learning of local motion-related features that generalize well, and to prevent overfitting to scene-specific appearance (which we observed when using a fully connected GRU). We experiment with different network variants in terms of receiving extra inputs (drone motor speeds, rotation rates) or having a feedforward instead of recurrent block (no memory). Extra inputs give a slightly larger network with 453k parameters, while the removal of recurrent connections gives a network of only 240k parameters. Schematic illustrations of these are shown in \cref{fig:npjr_networks}. Apart from the GRU blocks and final output, we use ELU (exponential linear unit)~\cite{clevert2016fast} activations throughout the network.
+
+\subsection*{Using estimates for real-world robot control}
+
+
+We use the two-layered control architecture illustrated in \cref{fig:npjr_overview}. While it closely follows the implementation in our flight controller, it is running on a separate on-board computer. This allows us to use the control gains from the flight controller as-is, with only minor tweaking to account for the delay added by communication between the on-board computer and the flight controller. The estimates (whether from the flight controller's EKF or the network) come in at 200~Hz, are converted into thrust and torque commands, and are sent back to the flight controller's motor mixer at 200~Hz.
+
+The first layer consists of a proportional controller that compares commanded attitude and estimated attitude (from the network) to generate rotation rate setpoints. The second layer is implemented as a PID (proportional-integral-derivative) controller, translating these rotation rate setpoints---combined with estimated rotation rates---into torque commands. These are then sent to the motor mixer running on the flight controller. The motor mixer converts these torque commands, along with a single thrust command, into individual motor commands. The mixing process involves a linear transformation based on the specific geometric layout of the drone.
+
+For our flight tests, we have a human pilot controlling the drone. While stable flight is possible with the pilot immediately commanding the attitude of the drone (angle or stabilized mode), we make use of an outer-loop position controller running on the flight controller (position mode). An additional optical flow sensor provides velocity estimates, allowing the pilot to control position instead of attitude. This greatly simplifies flight testing, and makes individual tests more repeatable. Furthermore, because our training data inherently contains biases, some kind of outer-loop controller (whether a human pilot or a software position controller) is necessary to mitigate these biases during testing.
+
+
+\subsubsection*{Robot setup}
+
+An overview of the hardware setup can be found in \cref{tab:npjr_hw_components}. We use a custom 5-inch quadrotor (shown in \cref{fig:npjr_overview}) to perform real-world flight tests. The drone has a total weight of approximately 750~g, including sensors, actuators, on-board compute and battery. All algorithms are implemented to run entirely on board, using an NVIDIA Jetson Orin NX embedded GPU to receive data from the event camera, estimate flight attitude and rotation rate, and calculate control commands in real time. Body torque commands based on the estimated attitude and rotation rate are sent to the flight controller, which is a Kakute H7 mini running the open-source autopilot software PX4. PX4 internally runs the EKF at 200~Hz for state estimation, and these estimates are used for training and evaluation. Communication between the flight controller and the embedded GPU is done using ROS2~\cite{macenski2022robot}. An MTF-01 optical flow sensor and rangefinder enables pilot control in position mode. We record ground-truth flight attitude and trajectories (for plotting) using a motion capture system.
+
+\begin{table*}[t]
+\centering
+\resizebox{0.85\linewidth}{!}{%
+\begin{tabular}{llrr}
+\toprule
+Component     & Product & Mass [g] & \textasciitilde{}Power [W]               \\ \midrule
+Frame                  & Armattan Marmotte 5~inch &  \multirow{7}{*}{455} & \multirow{7}{*}{200}           \\
+Motors                  & Emax Eco II Series 2306 & &        \\
+Propellers              & Ethix S5 5~inch  & &               \\
+Flight controller      & Holybro Kakute H7 Mini  &   &              \\
+Optical flow \& range sensor & MicoAir MTF-01 & & \\
+ESC                    & Holybro Tekko32 F4 4in1 mini 50A BL32  &     &   \\
+Receiver                    & Radiomaster RP2 V2 ELRS Nano  &     &   \\ \midrule
+Battery                & iFlight Fullsend 4S 3000mAh Li-Ion & 208   &  -  \\
+\multirow{2}{*}{On-board compute}  & NVIDIA Jetson Orin NX 16GB \& & \multirow{2}{*}{62} & \multirow{2}{*}{9$^*$} \\ & DAMIAO v1.1 carrier board & & \\
+Event camera     & iniVation DVXplorer Micro  & 22   &      max 0.7\\ \midrule
+Total & - & 747 & 209.7 \\ \bottomrule
+\end{tabular}
+}
+\caption{List of hardware components used during robot experiments.}
+\label{tab:npjr_hw_components}
+\end{table*}
+
+We use a downward-looking DVXplorer Micro event camera in combination with a 140\textdegree-field-of-view lens to capture as much of the environment as possible. To prevent bandwidth saturation while keeping good estimation performance, we only enable every other pixel on the sensor, resulting in a 320$\times$240 stream (instead of 640$\times$480) for the same field-of-view. These events are accumulated into 5~ms frames for the network. The entire events-to-attitude pipeline is running at approximately 200~Hz, with the embedded GPU consuming around 9~W on average. We found that at least 200~Hz is necessary for stable control, due to the torque commands going directly to the motors. While the pipeline itself can run at frequencies as high as 1~kHz, communication limited real-world flight tests to 500~Hz without any logging, and 200~Hz with logging.

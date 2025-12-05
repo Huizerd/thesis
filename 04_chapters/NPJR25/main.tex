@@ -2,19 +2,35 @@
 \label{ch:npjr}
 
 {\it
-Vision is an essential part of attitude control for many flying animals, some of which have no dedicated sense of gravity. Flying robots, on the other hand, typically depend heavily on accelerometers and gyroscopes for attitude stabilization. In this work, we present the first vision-only approach to flight control for use in generic environments. We show that a quadrotor drone equipped with a downward-facing event camera can estimate its attitude and rotation rate from just the event stream, enabling flight control without inertial sensors. Our approach uses a small recurrent convolutional neural network trained through supervised learning. Real-world flight tests demonstrate that our combination of event camera and low-latency neural network is capable of replacing the inertial measurement unit in a traditional flight control loop. Furthermore, we investigate the network's generalization across different environments, and the impact of memory and different fields of view. While networks with memory and access to horizon-like visual cues achieve best performance, variants with a narrower field of view achieve better relative generalization. Our work showcases vision-only flight control as a promising candidate for enabling autonomous, insect-scale flying robots.
+Vision is an essential part of attitude control for many flying animals, some of which have no dedicated sense of gravity. Flying robots, on the other hand, typically depend heavily on accelerometers and gyroscopes for attitude stabilization. In this chapter, we present the first vision-only approach to flight control for use in generic environments. We show that a quadrotor drone equipped with a downward-facing event camera can estimate its attitude and rotation rate from just the event stream, enabling flight control without inertial sensors. Our approach uses a small recurrent convolutional neural network trained through supervised learning. Real-world flight tests demonstrate that our combination of event camera and low-latency neural network is capable of replacing the inertial measurement unit in a traditional flight control loop. Furthermore, we investigate the network's generalization across different environments, and the impact of memory and different fields of view. While networks with memory and access to horizon-like visual cues achieve best performance, variants with a narrower field of view achieve better relative generalization. Our work showcases vision-only flight control as a promising candidate for enabling autonomous, insect-scale flying robots.
 }
 
 \blfootnote{The contents of this chapter have been published in:\\
 	\vspace{-10pt}\begin{blockquote}
-		\textbf{J.\ J.\ Hagenaars}$^\dagger$, F.\ Paredes-Vall\'es$^\dagger$, G.\ C.\ H.\ E.\ de Croon, \emph{Self-supervised learning of event-based optical flow with spiking neural networks}, Advances in Neural Information Processing Systems (NeurIPS), 2021.
+		\textbf{J.\ J.\ Hagenaars}$^\dagger$, S.\ Stroobants$^\dagger$, S.\ M.\ Boht\'e, G.\ C.\ H.\ E.\ de Croon, \emph{All Eyes, no IMU: Learning Flight Attitude from Vision Alone}, npj Robotics, 2025.
 	\end{blockquote}%\vspace{-10pt}
-	{\scriptsize$\dagger$~~Equal contribution, with alphabetical ordering.}\\
+	{\scriptsize$\dagger$~~Equal contribution; author ordering determined by coin flip.}\\
 	$\text{}$\\
-	\textbf{Contribution:} The research in this chapter was a collaborative effort with dr. Federico Paredes-Vall\'es from the Micro Air Vehicle Laboratory (Delft University of Technology). We both contributed equally to the conception of the study, to performing the experiments, and to the analysis of the results. My main contribution lay in the training and implementation of the spiking neural networks, while Fede developed the self-supervised framework for learning low-latency, event-based optical flow.
+	\textbf{Contribution:} The research in this chapter was a collaborative effort with Stein Stroobants from the Micro Air Vehicle Laboratory (Delft University of Technology). We both contributed equally to the conception of the study, to performing the experiments, and to the analysis of the results. My main contribution lay in the software for training and on-board deployment of the neural networks, while Stein implemented the lower-level on-board control software.
 }
 
 \newpage
 \thispagestyle{empty}
 \phantom{blabla}
 \newpage
+
+\input{04_chapters/NPJR25/sec/1_intro}
+\input{04_chapters/NPJR25/sec/4_method}
+\input{04_chapters/NPJR25/sec/2_results}
+\input{04_chapters/NPJR25/sec/3_discussion}
+
+\section*{Supplementary material}
+\vspace{10pt}
+
+\newlist{mylist_npjr}{itemize}{1}
+\setlist[mylist_npjr]{label=\hspace{0pt}}
+\newcommand\itemonenpjr{\item \qrcode[height=0.4in]{https://mavlab.tudelft.nl/attitude_from_events}}
+
+\begin{mylist_npjr}[leftmargin=*, align=left, leftmargin=2em, itemindent=0pt, labelsep=0pt, labelwidth=2em]
+	\itemonenpjr\quad Project page: \url{https://mavlab.tudelft.nl/attitude_from_events}
+\end{mylist_npjr}

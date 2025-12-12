@@ -9,7 +9,6 @@
 *.toc
 dissertation.pdf
 propositions.pdf
-*.png
 *.csv
 *.aux
 *.bbl

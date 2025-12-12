@@ -56,9 +56,9 @@ The dissertation follows a paper-based structure:
 04_chapters/
 ├── Intro/          - Introduction
 ├── NeurIPS21/      - Self-Supervised Learning of Event-Based Optical Flow with SNNs (NeurIPS 2021)
-├── SR23/           - Event-Based Vision Meets Deep Learning on Autonomous Racing (Science Robotics 2023)
-├── CVPR25/         - Chapter from CVPR 2025
-├── NPJR25/         - Chapter from Nature Portfolio 2025
+├── SR23/           - Fully Neuromorphic Vision and Control for Autonomous Drone Flight (Science Robotics 2023)
+├── CVPR25/         - On-Device Self-Supervised Learning of Low-Latency Monocular Depth from Only Events (CVPR 2025)
+├── NPJR25/         - All Eyes, no IMU: Learning Flight Attitude from Vision Alone (npj Robotics 2025)
 └── Conclusion/     - Conclusion
 ```
 

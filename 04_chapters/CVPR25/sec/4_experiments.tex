@@ -1,7 +1,7 @@
 \section{Experiments}
 \label{sec:cvpr_experiments}
 
-\subsection{Event-based depth benchmarks}
+\subsection*{Event-based depth benchmarks}
 
 \begin{figure*}[!ht]
     \centering
@@ -23,7 +23,7 @@ While our accuracy on the DSEC disparity benchmark falls short of supervised bas
 
 \paragraph{Limitations.} Several factors constrain the accuracy of our methods on these benchmarks, including the reliance on self-supervised learning with events only, a compact network architecture, the use of monocular depth estimation rather than stereo and the imperfect estimation of a scaling factor for converting monocular depth to metric depth. Errors in few-event areas could be reduced by, e.g., including the reconstruction loss from~\cite{paredes-valles2021back}. However, our aim is not to surpass state-of-the-art methods, and we believe the quality of our depth predictions is sufficient to support downstream tasks like robot navigation.
 
-\subsection{Drone experiments}
+\subsection*{Drone experiments}
 
 \paragraph{Setup.} We first pre-train our network on the UZH-FPV dataset~\cite{delmerico2019are} using our self-supervised pipeline. This dataset was chosen for its diverse set of motion trajectories, enabling the network to learn a latent representation that generalizes well across various motion types. After pre-training, the network is deployed on a drone, where online learning (fine-tuning) is performed during flight. The network's forward pass operates at an average speed of 30~Hz, with a backward pass and gradient update conducted every 10 forward passes. During flight experiments, we set the drone to fly at a constant height and a forward speed of 0.5~m/s. The predicted depth is binned and used to control the drone's yaw rate.
 

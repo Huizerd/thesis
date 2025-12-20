@@ -77,7 +77,7 @@ On the other hand, the control part of the network, consisting of a linear mappi
 
 Here, we explain the main components of the proposed fully neuromorphic vision-to-control pipeline, starting with the neuron model of our SNN and how this is trained in a self-supervised fashion using real event camera data. Next, we describe how the vision-based state estimate can be used for navigation, and how we train a controller on top of it. Finally, we discuss the real-world tests and hardware and the performed energy benchmarks.
 
-\subsection{Simulating the on-chip spiking neuron model}
+\subsection*{Simulating the on-chip spiking neuron model}
 
 In this study, we utilize a spiking neuron model based on the current-based leaky-integrate-and-fire (CUBA-LIF) neuron, whose membrane potential $U$ and synaptic input current $I$ at timestep $t$ can be written as:
 \begin{align}
@@ -95,7 +95,7 @@ As surrogate gradient for the spiking function $\sigma$, we opt for the derivati
 \end{align}
 with $\gamma=10$ being the surrogate width.
 
-\subsection{Four-point parametrization to estimate homography}
+\subsection*{Four-point parametrization to estimate homography}
 
 Assuming that $\tilde{\boldsymbol{x}}=\left[\boldsymbol{x}^T, 1\right]^T$ and $\tilde{\boldsymbol{x}}'=\left[\boldsymbol{x}'\,^T, 1\right]^T$ are two undistorted corresponding points from a planar scene with pixel array coordinates $\boldsymbol{x}= [x,y]^T$ and $\boldsymbol{x}'= [x',y']^T$ expressed in homogeneous coordinates and captured by a pinhole camera at different time instances, a planar homography transformation is a linear projective transformation that maps $\tilde{\boldsymbol{x}}\leftrightarrow\tilde{\boldsymbol{x}}'$ such that:
 \begin{align}\label{eq:sr_homo}
@@ -166,7 +166,7 @@ Once the homography matrix is estimated, we can estimate a dense (per-pixel) opt
 \end{align}
 which encodes the displacement of pixel $\boldsymbol{x}$ in the time window of $\boldsymbol{H}$. $(\cdot)_\mathrm{Eucl}$ indicates the conversion from homogeneous to Euclidean coordinates.
 
-\subsection{Self-supervised learning of event-based optical flow}
+\subsection*{Self-supervised learning of event-based optical flow}
 
 To train our spiking architecture to estimate the displacement of the pixels of the four corner ROIs in a self-supervised fashion, we use the contrast maximization framework for motion compensation \cite{gallego2018unifying, gallego2019focus}. Assuming constant illumination, accurate optical flow information is encoded in the spatiotemporal misalignments among the events triggered by a moving edge (blur). To retrieve it, one has to learn to compensate for this motion (deblur the event partition) by transporting the events through space and time. Once we get a per-pixel optical flow estimate $\boldsymbol{u}(\boldsymbol{x}, \boldsymbol{H})$ from \eqnref{eq:sr_flow}, we can propagate the events to a reference time $t_{\text{ref}}$ through the following linear motion model:
 \begin{equation}\label{eq:sr_motionmodel}
@@ -206,7 +206,7 @@ which is a buffer that gets populated every forward pass with the input events a
 \end{equation}
 where $I$ is the set of $N$ pixels in the image, and $u^\mathrm{GT}$ is the ground-truth flow.
 
-\subsection{From a vision-based state estimate to control}
+\subsection*{From a vision-based state estimate to control}
 
 The corner ROI flows $\left[\boldsymbol{u}_\mathrm{TL}^T,\boldsymbol{u}_\mathrm{TR}^T,\boldsymbol{u}_\mathrm{BR}^T,\boldsymbol{u}_\mathrm{BL}^T\right]^T \in \mathbb{R}^{8\times 1}$ resulting from the vision-based state estimation can be used to control the drone. More specifically, we can transform the flows to visual observable estimates~\cite{decroon2013opticflow}, consisting of unscaled velocities $\boldsymbol{\hat{\nu}}^\mathcal{C} \in \mathbb{R}^{3\times 1}$ and yaw rate $\hat{\omega}^\mathcal{C}_z$ in the camera frame $\mathcal{C}$, as follows~\cite{longuet-higgins1980interpretation}:
 \begin{align}
@@ -234,7 +234,7 @@ where $\boldsymbol{u}$ is the optical flow of a world point with pixel array coo
 
 Because \eqnref{eq:sr_visobs} is a linear transformation, it can be ``merged'' with other transformations if these are also linear. This holds for the decoding from spikes to corner ROI flows in the vision SNN, meaning that we can use a single linear transformation from spikes to control commands if we use a linear controller. In a similar fashion, we can use this idea to connect separately trained SNNs, merging their linear decodings and encodings. If both are implemented on neuromorphic hardware, this would mean that no off-chip transfer is necessary. \figref{fig:sr_merge} illustrates these concepts.
 
-\subsection{Training control in simulation}
+\subsection*{Training control in simulation}
 
 We perform control by linearly transforming the visual observable estimates $\boldsymbol{\hat\nu}^\mathcal{B} \in \mathbb{R}^{3\times 1}$ and $\hat\omega_z^\mathcal{B}$, the drone's absolute roll $\lvert\phi\rvert$ and pitch $\lvert\theta\rvert$ and the unscaled velocity setpoint $\boldsymbol{\nu}^\mathcal{B}_{\mathrm{sp}} \in \mathbb{R}^{3\times1}$ to a control command $\boldsymbol{c} \in \mathbb{R}^{4\times 1}$, which consists of an upward, mass-normalized collective thrust offset from hover $\bar{f}_{0,c}$ in the body frame $\mathcal{B}$, a roll angle $\phi_c$ and pitch angle $\theta_c$, and a yaw rate $\omega^\mathcal{B}_{z,c}$, in order to reach a certain setpoint of unscaled velocities $\boldsymbol{\nu}_{\mathrm{sp}}^\mathcal{B}$ and yaw rate $\omega_{z,\mathrm{sp}}^\mathcal{B}$ (always 0).
 
@@ -292,7 +292,7 @@ All dynamics equations are integrated with 4$^{\mathrm{th}}$-order Runge-Kutta w
 
 % Extra experiments were performed by connecting the vision network to a hand-tuned proportional-integral (PI) controller. All remaining details can be found in the Supplementary Methods.
 
-\subsection{Hardware setup}
+\subsection*{Hardware setup}
 
 Real-world experiments were performed with a custom-built quadrotor carrying the event-based camera (DVS 240), a single-board computer (UP Squared) and a neuromorphic processor (Intel Kapoho Bay with two Loihi neuromorphic research chips). A high-level overview can be found in \figref{fig:sr_pipeline}, with all components are listed in \tabref{tab:sr_components}. We use PX4 as autopilot firmware, and ROS (Robot Operating System) for communication. More specifically, events coming from the event-based camera are passed to the UP Squared over USB (Universal Serial Bus) using ROS1. These events are processed (downsampling, cropping, limiting to 90 per image corner ROI) on the UP Squared, and sent as spikes to the vision network running on the Kapoho Bay over USB. After processing, the output spikes are sent back over USB to the UP Squared, where they are decoded into flows for each corner ROI. The ROI flows are then published by a ROS1 node, and sent to ROS2 over a ROS1-ROS2 bridge. The linear controller (or PI controller, for that matter) and the processing around it, running as a ROS2 node, takes the ROI flows together with the attitude estimate coming from PX4 (IMU) and the ego-motion setpoint provided by the user, and outputs the control command. This command is then sent over ROS2 to PX4, and processed by the low-level controllers there. ROS2 makes use of RTPS (real-time publish-subscribe) for communication, which allows for high-frequency and high-bandwidth messaging between the UP and PX4, meaning our entire pipeline can run at 200~Hz\textemdash approximately the frequency of PX4's attitude controller. This attitude control frequency was a major driver for our choice to run the neuromorphic pipeline at the same frequency. This choice also depended on various other factors, ranging from the trade-off between a fast execution frequency and good optical flow estimation to the limitations of the spike interfacing over USB. Importantly, a 5~ms event window turned out to give accurate optical flow estimates, as well as a very fast execution frequency. Moreover, this frequency can be attained reliably, as \tabref{tab:sr_energy} shows that Intel's Loihi inference time is consistently faster than 5~ms. For position control between test runs, and as failsafe, we use an OptiTrack motion capture system.
 
@@ -344,7 +344,7 @@ Because of the split between the vision and control parts of the pipeline, we ca
 	\label{fig:sr_vision_results}
 \end{figure*}
 
-\subsection{Robust vision-based state estimation}
+\subsection*{Robust vision-based state estimation}
 
 \begin{table*}[!t]
 	\centering
@@ -379,7 +379,7 @@ Thirdly, deploying one architecture to each image corner ROI instead of processi
 	\label{fig:sr_results1}
 \end{figure*}
 
-\subsection{Control through visual observables: From sim to real}
+\subsection*{Control through visual observables: From sim to real}
 
 Separately from the vision part, we trained and evaluated the control part of our pipeline. Due to limitations in the hardware setup (see Materials and Methods), this is a linear mapping from a visual observable estimate, absolute roll and pitch and a visual observable setpoint to thrust and attitude commands. The visual observable estimate is made up of unscaled velocity $\boldsymbol{\hat{\nu}}^\mathcal{B}$ and yaw rate $\hat{\omega}^\mathcal{B}_z$; the visual observable setpoint consists of the corresponding setpoints in unscaled velocity $\boldsymbol{\nu}^\mathcal{B}_{\mathrm{sp}}$ and yaw rate $\omega^\mathcal{B}_{z,\mathrm{sp}}$.
 A population of these linear mappings was evolved in simulation for a set of 16 unscaled velocity and yaw rate setpoints. Each unscaled velocity setpoint $\boldsymbol{\nu}^\mathcal{B}_{\mathrm{sp}}$ had at most one nonzero element $\in \{\pm0.2,\pm0.5,\pm1.0\}$~1/s. In other words: they represented hover, vertical flight in the form of landing at three speeds (no ascending flight), and horizontal flight in four directions at three speeds. Unless mentioned otherwise, the setpoint for yaw rate $\omega^\mathcal{B}_{z,\mathrm{sp}} = 0$. \figref{fig:sr_results1} shows the performance of the evolved linear network controller in simulation in terms of the estimated unscaled velocities $\boldsymbol{\hat{\nu}}^\mathcal{B}$ (\figref{fig:sr_results1}A) and the world position $\boldsymbol{p}^\mathcal{WB}$ over time (\figref{fig:sr_results1}B) for all setpoints. The control performance was satisfactory; The controller reached the setpoint in all cases, and was capable of keeping the unscaled velocities for the non-flight direction close to zero. Especially for $\nu_{*,\mathrm{sp}}^\mathcal{B}=\pm1.0$~1/s, some overshoot was witnessed, but this could be expected given that this is a linear mapping without any kind of derivative control.
@@ -390,7 +390,7 @@ Providing absolute attitude input to the network, and simulating the drag (as in
  
 Lastly, \figref{fig:sr_results1} shows the results obtained by connecting a hand-tuned proportional-integral (PI) controller to the vision-based state estimation (also see Movie S4). We compared this to the linear network controller. Looking at all directions and setpoints, we see that the PI controller reaches the setpoint faster than the network controller. For horizontal flight, the network controller was not at all able to reach the setpoint $\nu^\mathcal{B}_{\{x,y\},\mathrm{sp}} = \pm1.0$~1/s and only just in the case of $\pm0.5$~1/s, supposedly due to the limitations of linear control. The PI controller did not have this problem, as it could increment its control command to eliminate the steady-state error. For vertical flight, both the network and the PI controller had quite some overshoot for $\nu^\mathcal{B}_{z,\mathrm{sp}} = -1.0$~1/s. This had to do with the fact that at such speeds from such heights (2.5~m), the drone barely reached the setpoint before reaching the ground, and therefore had little time to compensate for any overshoot (see \figref{fig:sr_results1}A, PI controller for $\nu^\mathcal{B}_{z,\mathrm{sp}} = -0.5$~1/s, for which overshoot was similar but is corrected shortly after).
 
-\subsection{Other examples of versatility and robustness}
+\subsection*{Other examples of versatility and robustness}
 
 \begin{figure*}[!t]
 	\centering
@@ -422,7 +422,7 @@ Lastly, to demonstrate that our approach transfers to textures other than those 
 	\label{fig:sr_snntexture}
 \end{figure}
 
-\subsection{Benchmarking inference speed and energy consumption}
+\subsection*{Benchmarking inference speed and energy consumption}
 
 \begin{table*}[!t]
 	\centering

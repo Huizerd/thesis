@@ -1,7 +1,7 @@
 \section{Method}
 \label{sec:cvpr_method}
 
-\subsection{Optical flow from contrast maximization}
+\subsection*{Optical flow from contrast maximization}
 
 Each pixel in an event camera independently detects changes in brightness and generates an event $e_k = (t_k, \boldsymbol{x}_k, p_k)$ when this change exceeds a preset threshold. The polarity $p_k \in \{+1, -1\}$ indicates whether the brightness at pixel $\boldsymbol{x}_k$ and time $t_k$ increased or decreased. Contrast maximization~\cite{gallego2018unifying,gallego2019focus} assumes these events $\mathcal{E} = \{e_k\}_{k=1}^{N_e}$ are triggered by motion, meaning that a warp $e_k = (t_k, \boldsymbol{x}_k, p_k) \mapsto e'_k = (t_\text{ref}, \boldsymbol{x}'_k, p_k)$ with the correct motion estimate $\Delta\boldsymbol{x}_k$ will align it with other events triggered by the same portion of a moving edge, increasing the contrast of the image of warped events (IWE).
 
@@ -13,7 +13,7 @@ We follow the contrast maximization framework as in~\cite{paredes-valles2023tami
 
 where $\bar{t}_k(t_\text{ref})$ is the timestamp contribution of event $e_k$ to the IWE at reference time $t_\text{ref}$, and $\kappa$ is a bilinear splatting kernel. We regularize (prevent event collapse) by scaling IWEs by the number of pixels with at least one event and by masking events that get warped out of the image space at any point~\cite{hagenaars2021selfsupervised,paredes-valles2023taming}.
 
-\subsection{Combining depth and ego-motion into flow}
+\subsection*{Combining depth and ego-motion into flow}
 
 Assuming a static scene and no occlusion/disocclusion, depth and ego-motion can be accurately estimated from monocular video alone~\cite{zhou2017unsupervised}. The optical flow used to warp a pixel $\boldsymbol{x}$ between different views is constructed from depth $D$ and a camera transformation or relative pose $P$:
 \begin{equation}
@@ -39,7 +39,7 @@ where we average over the number of valid pixels $\lvert V \rvert$. Setting an a
     \label{fig:cvpr_cuda}
 \end{figure*}
 
-\subsection{Optimizations for on-device learning}
+\subsection*{Optimizations for on-device learning}
 
 For efficient prediction, we make use of a lightweight, 430k-parameter network inspired by~\cite{wu2024lightweight}. It consists of a strided convolutional encoder, a ConvGRU recurrent bottleneck, and a two-tailed convolutional decoder for depth and ego-motion (more details in the supplementary material). While one network forward pass takes less than a millisecond on an NVIDIA RTX 4090, computing the contrast maximization loss and backpropagating the resulting gradients each take up more than 10~ms.
 
@@ -53,7 +53,7 @@ Specifically, we assign one CUDA thread to handle one or more events in parallel
 
 As shown in \cref{fig:cvpr_cuda}, the resulting improvements are, depending on the device, roughly 100x in terms of runtime, and 2-5x in terms of memory consumption. Common datasets like UZH-FPV~\cite{delmerico2019are} and MVSEC~\cite{zhu2018multivehicle} have between 1k and 10k events per bin, well within the range of these speedups. Furthermore, looking at the peak delta memory, the removal of padding yields much lower memory consumption when event data is highly sparse. Because we now provide the analytical gradients in the CUDA backward kernel, these do not have to be computed through automatic differentiation, leading to further efficiency improvements.
 
-\subsection{Using depth for obstacle avoidance}
+\subsection*{Using depth for obstacle avoidance}
 
 In the absence of metric depth and with a possibly varying scale, we can construct simple obstacle-avoiding behaviour using the difference in predicted depths for different parts of the field-of-view~\cite{liu2023nano,chakravarty2017cnnbased}. More specifically, we slice the depth map into $K$ vertical bins, compute the average inverse depth $d_k$ for each, and use these to set a desired yaw rate $\dot{\psi}$:
 \begin{align}
@@ -71,7 +71,7 @@ where yawing to the right is positive, and $\bar{k}=\frac{K-1}{2}$ is the center
     \label{fig:cvpr_drone}
 \end{figure}
 
-\subsection{Drone and flight environment}
+\subsection*{Drone and flight environment}
 
 The experimental setup as shown in \cref{fig:cvpr_drone} consists of a custom 5-inch quadrotor with a total weight of approximately 800~g, including all sensors, actuators, on-board compute and battery. All algorithms are implemented to run entirely on board, using an NVIDIA Jetson Orin NX embedded GPU to receive data from the event camera, perform learning and estimate depth in real time. Control commands (yaw rate) based on the predicted depth maps are sent to the flight controller, a Kakute H7 Mini running the open-source autopilot software PX4. Communication between PX4 and the Orin is done using ROS2~\cite{macenski2022robot}. An MTF-01 optic flow sensor and rangefinder enables stable autonomous flight where only yaw rate is controlled based on the depth estimate.
 

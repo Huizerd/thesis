@@ -1,37 +1,84 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-\dropcap{W}{rite} conclusion here.
+\dropcap{T}{his} dissertation set out to bridge the gap between the theoretical promise of neuromorphic event-based vision and its practical deployment on autonomous flying robots. Through four interconnected research contributions, we have demonstrated a systematic progression from establishing fundamental learning capabilities to achieving vision-only flight control. Here, we synthesize these contributions and reflect on their broader implications.
 
 \section{Answers to research questions}
 
 \tcbset{colframe=black!60!, coltitle=white}
 \begin{tcolorbox}[title={\textbf{Research Question 1}}]
-    How can a neural network learn to estimate low-latency optical flow from events in a self-supervised manner?
+    How can spiking neural networks learn to estimate dense optical flow from event streams in a self-supervised manner?
 \end{tcolorbox}
+
+\cref{ch:neurips} established that spiking neural networks can learn complex, real-world visual tasks by presenting the first deep SNNs to successfully solve event-based optical flow estimation. We reformulated the state-of-the-art training pipeline, shortening time windows to approximate how SNNs receive spikes directly from event cameras, and improved the convexity of the self-supervised loss function. The key insights were that careful parameter initialization and surrogate gradient tuning are critical for successful SNN training, and that adaptive mechanisms based on presynaptic activity outperform those based on postsynaptic activity. These results demonstrated that SNNs can move beyond simple classification tasks to tackle the dense regression problems essential for robotic perception.
 
 \begin{tcolorbox}[title={\textbf{Research Question 2}}]
-    How can a fully neuromorphic vision-to-control pipeline be realized onboard a flying robot?
+    How can a fully neuromorphic vision-to-control pipeline be realized on-board a flying robot?
 \end{tcolorbox}
+
+\cref{ch:sr} demonstrated the first fully neuromorphic vision-to-control pipeline for controlling a flying drone, successfully bridging the gap from laboratory training to real-world deployment. We trained an SNN that takes event camera data and produces low-level control commands, deploying it on Intel's Loihi neuromorphic processor aboard a flying quadrotor. The system executed at 200~Hz while consuming only 7--12~mW for inference, achieving one to two orders of magnitude improvement in execution frequency compared to equivalent ANNs. Through successful sim-to-real transfer, the drone accurately followed various ego-motion setpoints including hovering, landing, and lateral maneuvers. The results revealed that event sparsity provides additional computational benefits: Loihi's execution frequency increased as event sparsity increased, making the system faster for slower motions. This work established that neuromorphic vision-to-control is not merely theoretically possible but practically deployable on resource-constrained platforms.
 
 \begin{tcolorbox}[title={\textbf{Research Question 3}}]
-    How can a flying robot learn to estimate depth from events in an online, self-supervised manner?
+    How can a neural network learn to estimate depth from events on-board a flying robot in an online, self-supervised manner?
 \end{tcolorbox}
 
+\cref{ch:cvpr} enabled self-supervised learning to occur during flight, eliminating the reality gap between offline training and real-world deployment. By systematically optimizing the contrast maximization framework for computational efficiency, we achieved a 100-fold runtime reduction while reducing memory usage by a factor of 2-5. Online learning during just two minutes of flight significantly improved depth estimation accuracy and enhanced obstacle avoidance performance by approximately 30\% compared to pre-training alone. These results demonstrated that on-device learning is feasible for embedded systems and that continuous adaptation can bridge the gap between training conditions and deployment environments. The work established that robots need not be limited to frozen models trained offline but can instead improve their perception through experience.
+
 \begin{tcolorbox}[title={\textbf{Research Question 4}}]
-    How can a neural network learn to estimate flight attitude from events, with the goal of replacing inertial sensors?
+    How can vision alone replace inertial measurement units for flight attitude estimation and control?
 \end{tcolorbox}
+
+\cref{ch:npjr} achieved ultimate sensor minimalism by demonstrating the first stable low-level flight control without an IMU, using purely visual input from an event camera. A compact recurrent convolutional neural network learned to estimate attitude and rotation rates from events alone, operating at 200~Hz on-board to match traditional IMU sampling rates. The key finding was that memory through recurrence is essential: feedforward networks failed to build the internal motion models necessary for tracking dynamic flight states, while recurrent networks successfully learned to infer attitude from optical flow patterns. Flight tests demonstrated stable control with most attitude errors within $\pm$3 degrees and rotation rate errors within $\pm$18 degrees per second across extended hover and dynamic maneuvers. This work established that event cameras can serve as the primary, or potentially sole, sensor for autonomous flight, bringing insect-scale robots with minimal sensor suites closer to reality.
 
 \tcbset{colframe=black!90!, coltitle=white}
 \begin{tcolorbox}[title={\textbf{Problem Statement}}]
     How can a flying robot learn to navigate autonomously when it only has event-based vision?
 \end{tcolorbox}
 
-\tcbset{colframe=black!90!, coltitle=white}
 \begin{tcolorbox}[title={\textbf{Main Research Question}}]
     How can robots learn to perceive the world with event-based vision in a way that enables effective acting in that world?
 \end{tcolorbox}
 
+Together, these four contributions provide a comprehensive answer to both the problem statement and the main research question. A flying robot \emph{can} learn to navigate autonomously with only event-based vision: SNNs can learn the necessary perceptual tasks (\cref{ch:neurips}), these networks can be deployed on neuromorphic hardware for real-time control (\cref{ch:sr}), they can adapt online to improve performance in novel environments (\cref{ch:cvpr}), and vision alone can replace traditional inertial sensors for stable flight (\cref{ch:npjr}). More broadly, robots can learn to perceive with event-based vision in ways that enable effective action through a combination of self-supervised learning, neuromorphic deployment, online adaptation, and sensor minimalism. The progression from perception to deployment to adaptation to sensor minimalism charts a path toward the ultimate goal of fully autonomous, fully neuromorphic flying robots.
+
 \section{Discussion}
 
+\subsection*{Toward fully neuromorphic robots}
+
+The contributions of this dissertation incrementally removed barriers on the path toward fully neuromorphic autonomous systems. \cref{ch:neurips} demonstrated that the fundamental learning capability exists: SNNs can be trained for complex visual tasks. \cref{ch:sr} showed that these networks can be compressed and deployed on actual neuromorphic hardware. \cref{ch:cvpr} proved that learning can happen on-board during operation, not just offline on powerful workstations. And \cref{ch:npjr} established that sensor complexity can be reduced, potentially to a single visual sensor. Together, these advances make a fully neuromorphic sensing-processing-actuation pipeline increasingly feasible.
+
+% \subsection*{The rapid progress of neuromorphic hardware}
+
+% The pace of neuromorphic hardware development during the period of this research has been remarkable. At the beginning of this dissertation work in 2021, neuromorphic hardware consisted primarily of bulky research prototypes costing thousands of euros: Intel's Loihi development boards weighing hundreds of grams, the SpiNNaker system filling server racks, IBM's TrueNorth requiring specialized interfaces, and iniVation's event cameras representing standalone sensors needing external processing. None of these were suitable for mobile robotics in their commercially available forms.
+
+% By the end of this dissertation in 2025, the landscape has transformed. SynSense's Speck integrates a 128$\times$128 event camera with an 8-layer convolutional neural network accelerator in a package weighing just 0.4~grams and consuming less than 10~mW, available for approximately 200~euros. Innatera's mixed-signal chips target microwatt operation for pre-processing event streams. This progression---from research prototypes to integrated, affordable, lightweight sensors---represents exactly the kind of practical advancement needed for neuromorphic robotics to become viable.
+
+\subsection*{A pragmatic view on neuromorphic computing}
+
+Working on neuromorphic systems in the context of robotics has taught a valuable lesson: real-world deployment demands pragmatism over ideological purity. Robotics serves as an unforgiving reality check: systems must actually work, not merely satisfy theoretical definitions. This experience has shaped a more nuanced perspective on what ``neuromorphic'' and ``spiking'' should mean in practice.
+
+The question should not be whether a network is \emph{truly} spiking in some pure binary sense, but whether its computational principles deliver meaningful benefits. If heavy quantization to several bits provides substantial energy savings while maintaining acceptable performance, that approach serves the goal of efficient robotics better than insisting on strictly binary spikes. Similarly, the appropriate processing paradigm depends on position in the sensing-processing pipeline: analog computation exploits subthreshold dynamics for processing massively parallel, low-bit signals near the sensor; digital processing handles higher-level reasoning with quantized neural networks; and hybrid approaches combine the strengths of each. For sensing itself, events excel at capturing motion with high temporal resolution and low latency, while traditional frames provide the spatial detail needed for fine-grained perception. A pragmatic system might well combine both.
+
+This perspective extends to the broader neuromorphic research community. Rather than debating whether specific implementations qualify as ``truly neuromorphic,'' the field would benefit from focusing on the practical question: what computational principles actually advance the capabilities of efficient autonomous systems? The biological brain that inspires neuromorphic computing is itself a hybrid system, combining analog and digital-like signaling, sparse and dense representations, and multiple specialized processing stages. Strict adherence to any single implementation paradigm may be less important than understanding which principles apply where.
+
+\subsection*{Current limitations}
+
+Despite the progress demonstrated in this dissertation, significant challenges remain. Training spiking neural networks is still substantially more difficult than training conventional artificial neural networks, requiring careful tuning of surrogate gradients, initialization schemes, and time constants. Hardware constraints continue to limit network capacity: even state-of-the-art neuromorphic processors support only hundreds of thousands of neurons, while deep vision networks typically require millions. Input/output bandwidth and interfacing options between neuromorphic components remain bottlenecks that prevent efficiency gains from propagating to the system level.
+
+From an algorithmic perspective, self-supervised methods still fall short of supervised baselines on several quantitative metrics, though they often capture qualitative structure that supervised methods miss. Generalization across diverse environments remains challenging: networks trained in one setting may fail when deployed in conditions with different visual statistics. The systematic biases observed in attitude estimation---underestimation at high angles and rates, axis-dependent asymmetries---suggest that training data diversity and quality fundamentally limit what learned systems can achieve.
+
 \section{Outlook}
+
+\subsection*{Near-term directions}
+
+Several concrete extensions follow directly from the work presented in this dissertation. For online learning, incorporating reconstruction losses could reduce errors in regions with few events, while running inference and learning asynchronously at different rates would better balance computational resources. Partial fine-tuning of selected network layers during deployment could provide adaptation with reduced overhead. For vision-based state estimation, employing the contrast maximization framework for self-supervised attitude learning would eliminate dependence on external ground truth. The integration of learned optical flow with attitude estimation could exploit complementary motion and appearance cues.
+
+Hardware integration represents perhaps the most immediate opportunity. Devices like SynSense's Speck already provide the integrated event camera and neural network accelerator needed for the perception tasks demonstrated in this dissertation. Deploying the attitude estimation network from \cref{ch:npjr} on such hardware would achieve the IMU-like size, weight, and power consumption that would make vision-only flight practical on the smallest platforms.
+
+\subsection*{Longer-term vision}
+
+Looking further ahead, the ultimate vision is of insect-scale flying robots with vision as their only exteroceptive sensor, processing information through fully neuromorphic pipelines consuming only microwatts of power. Such robots would approach the efficiency of biological fliers that navigate complex environments with brains smaller than a pinhead.
+
+Achieving this vision requires progress on multiple fronts. Mixed-signal neuromorphic processors operating at microwatt power levels would enable continuous operation on the energy budgets of tiny robots. A deeper understanding of how neural networks build internal motion models could guide architectures that generalize robustly across environments. Self-supervised learning methods that improve rather than merely maintain performance over the lifetime of a robot would enable truly autonomous systems that become more capable through experience.
+
+The combination of event-based sensing, neuromorphic processing, and learned perception demonstrated in this dissertation provides a foundation for this vision. As hardware continues to miniaturize and algorithms continue to improve, the gap between biological and artificial flying systems will narrow. The fully autonomous, fully neuromorphic flying robot remains a challenging goal, but it is now a goal whose path forward has been charted.

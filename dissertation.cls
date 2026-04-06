@@ -250,6 +250,9 @@
 \definecolor{tudelft-fuchsia}{cmyk}{0.19,1,0,0.19}
 \definecolor{tudelft-bright-green}{cmyk}{0.36,0,1,0}
 \definecolor{tudelft-yellow}{cmyk}{0.02,0,0.54,0}
+\definecolor{sa-cyan}{HTML}{58C8DC}
+\definecolor{sa-dark}{HTML}{0F183F}
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 
 %% Use TU Delft cyan as the color for titles, unless the 'print' option is
 %% specified, in which case we use anthracite, a dark gray, which is also used

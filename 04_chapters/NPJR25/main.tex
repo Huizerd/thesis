@@ -2,7 +2,7 @@
 \label{ch:npjr}
 
 {\it
-Vision is an essential part of attitude control for many flying animals, some of which have no dedicated sense of gravity. Flying robots, on the other hand, typically depend heavily on accelerometers and gyroscopes for attitude stabilization. In this chapter, we present the first vision-only approach to flight control for use in generic environments. We show that a quadrotor drone equipped with a downward-facing event camera can estimate its attitude and rotation rate from just the event stream, enabling flight control without inertial sensors. Our approach uses a small recurrent convolutional neural network trained through supervised learning. Real-world flight tests demonstrate that our combination of event camera and low-latency neural network is capable of replacing the inertial measurement unit in a traditional flight control loop. Furthermore, we investigate the network's generalization across different environments, and the impact of memory and different fields of view. While networks with memory and access to horizon-like visual cues achieve best performance, variants with a narrower field of view achieve better relative generalization. Our work showcases vision-only flight control as a promising candidate for enabling autonomous, insect-scale flying robots.
+Finally, this chapter pushes toward ultimate sensor minimalism by asking whether event-based vision can replace inertial sensors entirely. Vision is an essential part of attitude control for many flying animals, some of which have no dedicated sense of gravity. Flying robots, on the other hand, typically depend heavily on accelerometers and gyroscopes for attitude stabilization. We present the first vision-only approach to flight control for use in generic environments, showing that a quadrotor drone equipped with a downward-facing event camera can estimate its attitude and rotation rate from just the event stream, enabling flight control without inertial sensors. Our approach uses a small recurrent convolutional neural network trained through supervised learning. Real-world flight tests demonstrate that our combination of event camera and low-latency neural network is capable of replacing the inertial measurement unit in a traditional flight control loop. Furthermore, we investigate the network's generalization across different environments, and the impact of memory and different fields of view. While networks with memory and access to horizon-like visual cues achieve best performance, variants with a narrower field of view achieve better relative generalization. Our work showcases vision-only flight control as a promising candidate for enabling autonomous, insect-scale flying robots.
 }
 
 \blfootnote{The contents of this chapter have been published in:\\
@@ -29,8 +29,8 @@ Vision is an essential part of attitude control for many flying animals, some of
 
 \newlist{mylist_npjr}{itemize}{1}
 \setlist[mylist_npjr]{label=\hspace{0pt}}
-\newcommand\itemonenpjr{\item \qrcode[height=0.4in]{https://mavlab.tudelft.nl/attitude_from_events}}
+\newcommand\itemonenpjr{\item \qrcode[height=0.4in]{https://mavlab.tudelft.nl/all-eyes-no-imu-learning-flight-attitude-from-vision-alone}}
 
 \begin{mylist_npjr}[leftmargin=*, align=left, leftmargin=2em, itemindent=0pt, labelsep=0pt, labelwidth=2em]
-	\itemonenpjr\quad Project page: \url{https://mavlab.tudelft.nl/attitude_from_events}
+	\itemonenpjr\quad Project page: \url{https://mavlab.tudelft.nl/all-eyes-no-imu-learning-flight-attitude-from-vision-alone}
 \end{mylist_npjr}

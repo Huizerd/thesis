@@ -20,6 +20,15 @@
 
 \usepackage{courier}
 
+% Libertine's small-caps qu ligature carries no ToUnicode mapping, which breaks
+% copy/paste and search for words such as "questions" in headings and running
+% headers. Disabling the ligature costs nothing visually.
+\ifxetex\else
+    \DisableLigatures[q]{encoding = T1}
+    \input glyphtounicode
+    \pdfgentounicode=1
+\fi
+
 \usepackage{qrcode}
 \usepackage{enumitem}
 \usepackage{todonotes}

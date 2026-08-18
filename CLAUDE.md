@@ -24,15 +24,29 @@ python clean.py
 # Convert PDF figures to PNG (specify DPI)
 python pdf2png.py 300
 
-# Generate print-ready PDF with embedded fonts
+# Generate print-ready PDF with embedded fonts.
+# Both modes write to dissertation.pdf, so switch to print mode FIRST (see
+# Document Modes) and rerun the 4-step build. Running this on a screen-mode
+# build produces a file with no binding offset, no bleed and no crop marks.
 gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -sOutputFile=dissertation_print.pdf -f dissertation.pdf
 ```
 
 ## Document Modes
 
-Set in `dissertation.tex` line 1:
-- Screen version (default): `\documentclass{dissertation}` - optimized for on-screen reading
-- Print version: `\documentclass[print]{dissertation}` - includes binding offset
+Set in `dissertation.tex` line 1. Both modes write to `dissertation.pdf` and paginate
+identically, because `\textwidth` and `\textheight` are pinned to the same values in
+each; only the position of the text block on the sheet changes.
+
+- Screen version (default): `\documentclass{dissertation}` - 170x240mm page, no bleed
+  or crop marks, inner margin 17.0mm, outer 25.5mm.
+- Print version: `\documentclass[print]{dissertation}` - 176x246mm sheet holding a
+  170x240mm trim box (3mm bleed all round), crop marks on the outer edge and at top
+  and bottom, 6mm binding offset giving inner 20.6mm and outer 21.9mm. Sized for
+  Ipskamp Printing's 170x240mm thesis format and their 20mm margin recommendation.
+
+Before sending to the printer: switch to `[print]`, uncomment the cover page includes
+in `dissertation.tex`, rerun the 4-step build, then run the Ghostscript step. Verify
+the result reports a 176x246mm page size; 170x240mm means the screen build was used.
 
 ## Repository Structure
 

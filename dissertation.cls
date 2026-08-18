@@ -269,11 +269,18 @@
 
 %% Set the paper size to 17 by 24 cm, approximately halfway between A4 and A5.
 \if@print
+    %% Ipskamp's thesis format is 170x240mm and they ask for at least 3mm bleed
+    %% all round, hence a 176x246mm sheet with the trim box inset by 3mm.
+    %% Measured from the trim box, the binding offset of 6mm gives inner 20.6mm
+    %% and outer 21.9mm, meeting their 20mm recommendation horizontally.
+    %% Vertically the running head sits at 18.1mm and the last body line at
+    %% 19.9mm; reaching 20mm on both would require shrinking \textheight and
+    %% repaginating, so the vertical layout is left as designed.
     \geometry{
-        papersize = {173mm,246mm},
-        layoutsize = {167mm,240mm},
+        papersize = {176mm,246mm},
+        layoutsize = {170mm,240mm},
         layoutoffset = {3mm,11mm},
-        bindingoffset = 3mm
+        bindingoffset = 6mm
     }
 \else
 \geometry{papersize = {170mm,240mm},

@@ -32,21 +32,45 @@ The dissertation class supports two main modes (configured in `dissertation.tex`
 
 - **Screen version** (default): `\documentclass{dissertation}`
   - Optimized for on-screen reading with hyperlinks
-  - No binding offset adjustment
+  - 170 x 240 mm page, no bleed and no crop marks
+  - Inner (spine) margin 17.0 mm, outer margin 25.5 mm
 
 - **Print version**: `\documentclass[print]{dissertation}`
-  - Optimized for physical printing with binding offset
-  - Use this when preparing the final print version
+  - 176 x 246 mm sheet containing a 170 x 240 mm trim box, i.e. 3 mm bleed on all four sides
+  - Crop marks on the outer edge and at top and bottom
+  - 6 mm binding offset, giving an inner (spine) margin of 20.6 mm and an outer margin of 21.9 mm
+  - Sized for [Ipskamp Printing](https://www.ipskampprinting.nl/en/thesis/layout-design/), whose thesis format is 170 x 240 mm and who ask for at least 3 mm bleed and roughly 20 mm margins
 
-**Important**: Before sending to the printer, change to the `[print]` option and uncomment the cover page includes in `dissertation.tex`.
+Both modes pin `\textwidth` and `\textheight` to the same values, so switching between them
+repositions the text block on the sheet without changing pagination.
 
 ### Print-Ready PDF
 
-To create a print-ready PDF with all fonts embedded (required by most publishers):
+Both modes write to the same `dissertation.pdf`, so the print build has to be produced
+*before* fonts are embedded. Running Ghostscript on a screen-mode build would hand the
+printer a file with no binding offset, no bleed and no crop marks.
 
-```bash
-gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -sOutputFile=dissertation_print.pdf -f dissertation.pdf
-```
+1. Set line 1 of `dissertation.tex` to `\documentclass[print]{dissertation}`.
+2. Uncomment the cover page includes in `dissertation.tex`.
+3. Run the full four-step build:
+
+   ```bash
+   pdflatex dissertation
+   bibtex dissertation
+   pdflatex dissertation
+   pdflatex dissertation
+   ```
+
+4. Embed all fonts, as required by most publishers. Ghostscript preserves the
+   176 x 246 mm sheet size:
+
+   ```bash
+   gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -dEmbedAllFonts=true -sOutputFile=dissertation_print.pdf -f dissertation.pdf
+   ```
+
+To confirm the right mode was built, check that `dissertation_print.pdf` reports a
+176 x 246 mm page size and shows crop marks. A 170 x 240 mm page means the screen
+version was embedded by mistake.
 
 ## Structure
 

@@ -32,12 +32,12 @@ where we average over the number of valid pixels $\lvert V \rvert$. Setting an a
     \mathcal{L} = \mathcal{L}_\text{CM} + \lambda\mathcal{L}_\text{geo}
 \end{equation}
 
-\begin{figure*}
+\begin{sidewaysfigure}
     \centering
-    \includegraphics[width=\linewidth]{04_chapters/CVPR25/cc_figures/tikz-figure1.pdf}
+    \includegraphics[width=0.95\textheight]{04_chapters/CVPR25/cc_figures/tikz-figure1.pdf}
     \caption{\textbf{Top left:} events $e$ of different polarities are warped forward and backward by bilinearly sampled (BS) optical flows $\boldsymbol{u}$. Events warped outside the image are discarded. Next, events are bilinearly splatted to IWEs (images of warped events) at all reference times $t^*_\text{ref}$. \textbf{Bottom left:} batched processing of events such as in~\cite{paredes-valles2023taming} requires zero-padding bins of events to equal length to facilitate simultaneous warping to neighboring reference times. In contrast, our per-event parallel processing in CUDA warps all events independently, doing away with padding and allowing to warp only those events still in the image space. \textbf{Right:} Runtime and peak increase in memory consumption for different phases of computing the contrast maximization loss on an NVIDIA RTX 4090 and Jetson Orin NX. 10\% of each bin is made up of padding, which is not processed by the CUDA implementation. We indicate the range of events per bin for common datasets~\cite{delmerico2019are,zhu2018multivehicle} in black. Naive PyTorch processes all events in a for-loop. While batching events together improves a lot over this, parallel processing of all events in CUDA results in even bigger speedups with less memory consumed.}
     \label{fig:cvpr_cuda}
-\end{figure*}
+\end{sidewaysfigure}
 
 \subsection*{Optimizations for on-device learning}
 
@@ -51,7 +51,7 @@ The abovementioned issues can be resolved by considering that all events indepen
 
 Specifically, we assign one CUDA thread to handle one or more events in parallel, read off their positions in the 3D domain $(x,y,t)$, and then apply the flow fields to ``push'' each event through time either forward or backward in an iterative fashion. During the backward pass, we use the stored warped-point positions along each time step (forward and backward) to compute partial derivatives w.r.t the flow vector $\frac{\partial \mathcal{L}}{\partial \mathbf{f}}$. As in the forward pass, we rely on bilinear interpolation weights at each $(x,y)$ to distribute gradients to the four nearest flow-vector cells. By avoiding padding and unnecessary warping computations, we achieve significantly better parallelization on GPUs.
 
-As shown in \cref{fig:cvpr_cuda}, the resulting improvements are, depending on the device, roughly 100x in terms of runtime, and 2-5x in terms of memory consumption. Common datasets like UZH-FPV~\cite{delmerico2019are} and MVSEC~\cite{zhu2018multivehicle} have between 1k and 10k events per bin, well within the range of these speedups. Furthermore, looking at the peak delta memory, the removal of padding yields much lower memory consumption when event data is highly sparse. Because we now provide the analytical gradients in the CUDA backward kernel, these do not have to be computed through automatic differentiation, leading to further efficiency improvements.
+As shown in \cref{fig:cvpr_cuda}, the resulting improvements are, depending on the device, roughly 100$\times$ in terms of runtime, and 2--5$\times$ in terms of memory consumption. Common datasets like UZH-FPV~\cite{delmerico2019are} and MVSEC~\cite{zhu2018multivehicle} have between 1k and 10k events per bin, well within the range of these speedups. Furthermore, looking at the peak delta memory, the removal of padding yields much lower memory consumption when event data is highly sparse. Because we now provide the analytical gradients in the CUDA backward kernel, these do not have to be computed through automatic differentiation, leading to further efficiency improvements.
 
 \subsection*{Using depth for obstacle avoidance}
 
